@@ -1,6 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
 import { SiteShell } from "@/components/SiteChrome";
+import { Button } from "@/components/ui/Button";
+import { InfoCard } from "@/components/ui/InfoCard";
+import { Section } from "@/components/ui/Section";
 import { branches } from "@/lib/content";
 
 const branch = branches.poissonniere;
@@ -20,7 +22,7 @@ export default function PoissonnierePage() {
                 sizes="(max-width: 768px) 100vw, 66vw"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[rgba(255,248,245,0.85)] via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[rgba(255,248,245,0.9)] via-[rgba(255,248,245,0.15)] to-transparent" />
               <div className="absolute right-6 bottom-6 left-6">
                 <h1 className="font-serif text-[40px] font-bold tracking-[-0.96px] text-ink md:text-[48px] md:leading-[56px]">
                   {branch.heroTitle}
@@ -33,7 +35,10 @@ export default function PoissonnierePage() {
           </div>
 
           <div className="flex flex-col gap-6 md:col-span-4 md:h-[600px]">
-            <article className="flex flex-1 flex-col justify-center rounded-xl border border-white/50 bg-white/70 p-6 shadow-soft backdrop-blur-[5px]">
+            <InfoCard
+              tone="glass"
+              className="flex flex-1 flex-col justify-center"
+            >
               <div className="mb-3 flex items-center gap-2">
                 <span className="relative h-5 w-4">
                   <Image
@@ -58,7 +63,7 @@ export default function PoissonnierePage() {
                 href={branch.mapsUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-4 inline-flex items-center gap-1 text-[14px] font-semibold tracking-[0.7px] text-gold"
+                className="mt-4 inline-flex items-center gap-1 text-[14px] font-semibold tracking-[0.7px] text-gold transition hover:brightness-110 focus-ring"
               >
                 Itinéraire
                 <span className="relative size-[10px]">
@@ -70,9 +75,12 @@ export default function PoissonnierePage() {
                   />
                 </span>
               </a>
-            </article>
+            </InfoCard>
 
-            <article className="flex flex-1 flex-col justify-center rounded-xl border border-white/50 bg-[#fbf2ed] p-6 shadow-soft backdrop-blur-[5px]">
+            <InfoCard
+              className="flex flex-1 flex-col justify-center border border-white/50 bg-[#fbf2ed] shadow-soft"
+              tone="blush"
+            >
               <div className="mb-3 flex items-center gap-2">
                 <span className="relative size-5">
                   <Image
@@ -107,11 +115,16 @@ export default function PoissonnierePage() {
                   </li>
                 ))}
               </ul>
-            </article>
+            </InfoCard>
           </div>
         </section>
 
-        <section className="mx-auto flex max-w-[1280px] flex-col items-center gap-6 px-6 py-12 md:flex-row md:gap-6 md:px-16 md:py-16">
+        <Section
+          tone="transparent"
+          width={1280}
+          className="py-12 md:py-16"
+          innerClassName="flex flex-col items-center gap-6 md:flex-row md:gap-6"
+        >
           <div className="flex-1 md:pr-20">
             <h2 className="font-serif text-[32px] font-semibold text-red">
               {branch.atmosphere.title}
@@ -124,12 +137,13 @@ export default function PoissonnierePage() {
                 {paragraph}
               </p>
             ))}
-            <Link
+            <Button
               href="/reservations?branch=poissonniere"
-              className="mt-6 inline-flex rounded-full bg-red px-6 py-3 text-[14px] font-semibold tracking-[0.7px] uppercase text-white shadow-md transition hover:brightness-110"
+              variant="primary"
+              className="mt-6 bg-red px-6 shadow-md"
             >
               Réserver une table
-            </Link>
+            </Button>
           </div>
           <div className="relative h-[320px] w-full flex-1 overflow-hidden rounded-xl shadow-lg md:h-[384px]">
             <Image
@@ -140,25 +154,25 @@ export default function PoissonnierePage() {
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
-        </section>
+        </Section>
 
-        <section className="mx-auto max-w-[1280px] px-6 pb-20 md:px-16">
+        <Section tone="transparent" width={1280} className="pb-20 pt-0">
           <a
             href={branch.mapsUrl}
             target="_blank"
             rel="noreferrer"
-            className="relative block h-[320px] overflow-hidden rounded-xl shadow-md md:h-[384px]"
+            className="relative block h-[320px] overflow-hidden rounded-xl shadow-md focus-ring md:h-[384px]"
           >
             <Image
               src={branch.map}
               alt="Carte Poissonnière"
               fill
-              className="object-cover"
+              className="object-cover transition duration-500 hover:scale-[1.01]"
               sizes="(max-width: 1280px) 100vw, 1152px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[rgba(255,248,245,0.3)] to-transparent" />
           </a>
-        </section>
+        </Section>
       </div>
     </SiteShell>
   );

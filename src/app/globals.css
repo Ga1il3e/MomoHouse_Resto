@@ -15,6 +15,15 @@
   --hours-icon: #ffe088;
   --contact-icon: #e5e2dc;
   --hours-border: #e9e1dc;
+  --page-x: 1.5rem;
+  --section-y: 5rem;
+  --header-h: 3.5rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-x: 4rem;
+  }
 }
 
 @theme inline {
@@ -47,6 +56,10 @@ body {
   font-family: var(--font-be-vietnam), system-ui, sans-serif;
 }
 
+body.menu-open {
+  overflow: hidden;
+}
+
 .font-serif {
   font-family: var(--font-newsreader), Georgia, serif;
 }
@@ -63,4 +76,104 @@ body {
 
 .shadow-soft {
   box-shadow: 0px 10px 40px -10px rgba(161, 29, 33, 0.08);
+}
+
+.nav-link {
+  position: relative;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.8);
+  padding-bottom: 5px;
+  transition: color 0.2s ease;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.25s ease;
+}
+
+.nav-link:hover {
+  color: #fff;
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+.nav-link-active {
+  position: relative;
+  color: var(--gold);
+  padding-bottom: 5px;
+}
+
+.nav-link-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(1);
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes defiler-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+.animate-hero {
+  animation: hero-fade-up 0.9s ease-out both;
+}
+
+.animate-hero-delay {
+  animation: hero-fade-up 0.9s ease-out 0.15s both;
+}
+
+.animate-hero-delay-2 {
+  animation: hero-fade-up 0.9s ease-out 0.3s both;
+}
+
+.animate-defiler {
+  animation: defiler-pulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero,
+  .animate-hero-delay,
+  .animate-hero-delay-2,
+  .animate-defiler {
+    animation: none;
+  }
 }

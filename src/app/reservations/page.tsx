@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useMemo, useState } from "react";
 import { SiteShell } from "@/components/SiteChrome";
+import { Button } from "@/components/ui/Button";
+import { Section } from "@/components/ui/Section";
 import {
   BranchId,
   branches,
@@ -21,6 +23,9 @@ type FormState = {
 };
 
 type Confirmed = FormState;
+
+const fieldClass =
+  "w-full rounded-lg border border-border bg-white px-[17px] py-[13px] text-[16px] text-ink outline-none transition focus:border-red focus-ring";
 
 function ReservationForm() {
   const searchParams = useSearchParams();
@@ -57,7 +62,7 @@ function ReservationForm() {
 
   return (
     <div className="mx-auto grid w-full max-w-[1152px] gap-12 lg:grid-cols-12">
-      <div className="relative rounded-xl bg-white px-6 pb-12 pt-12 shadow-card md:px-12 lg:col-span-7">
+      <div className="relative rounded-xl bg-white px-6 py-12 shadow-card md:px-12 lg:col-span-7">
         {confirmed ? (
           <div className="flex flex-col gap-6">
             <h2 className="font-serif text-[28px] font-semibold text-red">
@@ -98,13 +103,14 @@ function ReservationForm() {
                 </dd>
               </div>
             </dl>
-            <button
+            <Button
               type="button"
-              className="rounded-lg bg-red px-4 py-4 text-[14px] font-semibold tracking-[0.7px] uppercase text-white"
+              variant="ink"
+              className="w-full rounded-lg py-4"
               onClick={() => setConfirmed(null)}
             >
               Nouvelle réservation
-            </button>
+            </Button>
           </div>
         ) : (
           <form className="flex flex-col gap-6" onSubmit={onSubmit}>
@@ -125,17 +131,19 @@ function ReservationForm() {
                       key={id}
                       type="button"
                       onClick={() => setBranchOverride(id)}
-                      className={`rounded-lg border p-[17px] text-center transition ${
+                      className={`rounded-lg border p-[17px] text-center transition focus-ring ${
                         selected
                           ? "border-red-bright bg-red-bright text-white"
-                          : "border-border bg-white text-ink"
+                          : "border-border bg-white text-ink hover:border-red/40"
                       }`}
                     >
                       <span className="block text-[14px] font-semibold tracking-[0.7px]">
                         {name}
                       </span>
                       <span
-                        className={`block text-[12px] font-medium ${selected ? "text-white/80" : "text-ink/80"}`}
+                        className={`block text-[12px] font-medium ${
+                          selected ? "text-white/80" : "text-ink/80"
+                        }`}
                       >
                         {district}
                       </span>
@@ -158,7 +166,7 @@ function ReservationForm() {
                   type="date"
                   value={date}
                   onChange={(event) => setDate(event.target.value)}
-                  className="rounded-lg border border-border px-[17px] py-[13px] text-[16px] text-ink outline-none focus:border-red"
+                  className={fieldClass}
                   required
                 />
               </div>
@@ -174,7 +182,7 @@ function ReservationForm() {
                     id="time"
                     value={time}
                     onChange={(event) => setTime(event.target.value)}
-                    className="w-full appearance-none rounded-lg border border-border px-[17px] py-[13px] text-[16px] text-ink outline-none focus:border-red"
+                    className={`${fieldClass} appearance-none`}
                   >
                     {reservationTimes.map((slot) => (
                       <option key={slot} value={slot}>
@@ -207,7 +215,7 @@ function ReservationForm() {
                   id="guests"
                   value={guests}
                   onChange={(event) => setGuests(Number(event.target.value))}
-                  className="w-full appearance-none rounded-lg border border-border px-[17px] py-[13px] text-[16px] text-ink outline-none focus:border-red"
+                  className={`${fieldClass} appearance-none`}
                 >
                   {guestOptions.map((count) => (
                     <option key={count} value={count}>
@@ -230,19 +238,20 @@ function ReservationForm() {
             {error ? <p className="text-[14px] text-closed">{error}</p> : null}
 
             <div className="border-t border-border pt-[17px]">
-              <button
+              <Button
                 type="submit"
-                className="w-full rounded-lg bg-red py-4 text-[14px] font-semibold tracking-[0.7px] uppercase text-white shadow-sm transition hover:brightness-110"
+                variant="ink"
+                className="w-full rounded-lg py-4 tracking-[0.7px]"
               >
                 CONFIRMER LA RÉSERVATION
-              </button>
+              </Button>
             </div>
           </form>
         )}
       </div>
 
       <aside className="flex flex-col gap-6 lg:col-span-5">
-        <div className="relative h-64 overflow-hidden rounded-xl">
+        <div className="relative h-64 overflow-hidden rounded-xl shadow-soft">
           <Image
             src="/images/reservation-interior.png"
             alt="Intérieur Momo House"
@@ -251,7 +260,7 @@ function ReservationForm() {
             sizes="(max-width: 1024px) 100vw, 40vw"
           />
         </div>
-        <div className="rounded-xl bg-blush p-6">
+        <div className="rounded-xl bg-blush p-6 shadow-card">
           <h3 className="font-serif text-[24px] font-semibold text-ink">
             Informations Pratiques
           </h3>
@@ -324,7 +333,7 @@ function ReservationForm() {
 export default function ReservationsPage() {
   return (
     <SiteShell variant="inner">
-      <section className="bg-cream px-6 py-20 md:px-16">
+      <Section tone="cream" width={1280}>
         <div className="mx-auto mb-12 max-w-[672px] text-center">
           <h1 className="font-serif text-[40px] font-bold tracking-[-0.96px] text-red md:text-[48px] md:leading-[56px]">
             Réservez votre table
@@ -342,7 +351,7 @@ export default function ReservationsPage() {
         >
           <ReservationForm />
         </Suspense>
-      </section>
+      </Section>
     </SiteShell>
   );
 }

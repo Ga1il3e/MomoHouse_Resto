@@ -2,17 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { site } from "@/lib/content";
 
 type HeaderProps = {
   variant?: "home" | "inner";
 };
 
-const navLinkClass =
-  "text-[14px] font-semibold tracking-[0.7px] uppercase text-white/80 transition hover:text-white";
-
-function ActiveLink({
+function NavLink({
   href,
   children,
   active,
@@ -24,13 +21,25 @@ function ActiveLink({
   return (
     <Link
       href={href}
-      className={
-        active
-          ? "border-b border-gold pb-[5px] text-[14px] font-semibold tracking-[0.7px] uppercase text-gold"
-          : navLinkClass
-      }
+      className={`focus-ring ${active ? "nav-link-active" : "nav-link"}`}
     >
       {children}
+    </Link>
+  );
+}
+
+function LaCarteLink({ className }: { className?: string }) {
+  return (
+    <Link
+      href="/#specialites"
+      className={[
+        "rounded-full border border-white px-[17px] py-[9px] text-[14px] font-semibold tracking-[0.7px] uppercase text-white transition hover:bg-white/10 focus-ring",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      LA CARTE
     </Link>
   );
 }
@@ -38,7 +47,13 @@ function ActiveLink({
 export function Header({ variant = "inner" }: HeaderProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [menuPath, setMenuPath] = useState(pathname);
   const isHome = variant === "home" || pathname === "/";
+
+  if (pathname !== menuPath) {
+    setMenuPath(pathname);
+    if (open) setOpen(false);
+  }
 
   const links = [
     { href: "/#adresses", label: "RESTAURANTS", match: false },
@@ -59,20 +74,35 @@ export function Header({ variant = "inner" }: HeaderProps) {
     },
   ];
 
+  useEffect(() => {
+    document.body.classList.toggle("menu-open", open);
+    return () => document.body.classList.remove("menu-open");
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
-    <header className="sticky top-0 z-50 bg-ink">
-      <div className="relative mx-auto flex max-w-[1280px] items-center justify-between px-6 py-2 md:px-16">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-ink">
+      <div
+        className={`mx-auto hidden h-14 max-w-[1280px] items-center px-6 md:px-16 lg:grid ${
+          isHome ? "grid-cols-[1fr_auto_1fr]" : "grid-cols-[auto_1fr_auto]"
+        }`}
+      >
         {isHome ? (
           <>
-            <Link
-              href="/#adresses"
-              className={`${navLinkClass} hidden lg:block`}
-            >
-              RESTAURANTS
-            </Link>
+            <div className="justify-self-start">
+              <NavLink href="/#adresses">RESTAURANTS</NavLink>
+            </div>
             <Link
               href="/"
-              className="absolute left-1/2 top-[-2px] hidden -translate-x-1/2 flex-col items-center lg:flex"
+              className="flex flex-col items-center justify-center focus-ring"
             >
               <span className="font-serif text-[24px] font-semibold uppercase tracking-[-1.2px] text-white">
                 {site.name}
@@ -81,70 +111,57 @@ export function Header({ variant = "inner" }: HeaderProps) {
                 {site.tagline}
               </span>
             </Link>
-            <nav className="hidden items-center gap-6 lg:flex">
-              <ActiveLink
-                href="/montmartre"
-                active={pathname === "/montmartre"}
-              >
+            <nav className="flex items-center justify-end gap-6">
+              <NavLink href="/montmartre" active={pathname === "/montmartre"}>
                 MONTMARTRE
-              </ActiveLink>
-              <ActiveLink
+              </NavLink>
+              <NavLink
                 href="/poissonniere"
                 active={pathname === "/poissonniere"}
               >
                 POISSONNIÈRE
-              </ActiveLink>
-              <ActiveLink href="/reservations" active>
-                RÉSERVATIONS
-              </ActiveLink>
-              <Link
-                href="/#specialites"
-                className="ml-4 rounded-full border border-white px-[17px] py-[9px] text-[14px] font-semibold tracking-[0.7px] uppercase text-white transition hover:bg-white/10"
+              </NavLink>
+              <NavLink
+                href="/reservations"
+                active={pathname === "/reservations"}
               >
-                LA CARTE
-              </Link>
+                RÉSERVATIONS
+              </NavLink>
+              <LaCarteLink className="ml-2" />
             </nav>
           </>
         ) : (
           <>
             <Link
               href="/"
-              className="font-serif text-[24px] font-semibold uppercase tracking-[-1.2px] text-white"
+              className="font-serif text-[24px] font-semibold uppercase tracking-[-1.2px] text-white focus-ring"
             >
               {site.name}
             </Link>
-            <nav className="hidden items-center gap-6 lg:flex">
+            <nav className="flex items-center justify-center gap-6">
               {links.map((link) => (
-                <ActiveLink
-                  key={link.href}
-                  href={link.href}
-                  active={link.match}
-                >
+                <NavLink key={link.href} href={link.href} active={link.match}>
                   {link.label}
-                </ActiveLink>
+                </NavLink>
               ))}
             </nav>
-            <Link
-              href="/#specialites"
-              className="hidden rounded-full border border-white px-[17px] py-[9px] text-[14px] font-semibold tracking-[0.7px] uppercase text-white transition hover:bg-white/10 lg:inline-flex"
-            >
-              LA CARTE
-            </Link>
+            <LaCarteLink />
           </>
         )}
+      </div>
 
+      <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between px-6 lg:hidden">
         <Link
           href="/"
-          className="font-serif text-[20px] font-semibold uppercase tracking-[-1px] text-white lg:hidden"
+          className="font-serif text-[20px] font-semibold uppercase tracking-[-1px] text-white focus-ring"
         >
           {site.name}
         </Link>
-
         <button
           type="button"
           aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
           aria-expanded={open}
-          className="flex size-10 items-center justify-center text-white lg:hidden"
+          className="flex size-10 items-center justify-center text-white focus-ring"
           onClick={() => setOpen((value) => !value)}
         >
           <span className="sr-only">Menu</span>
@@ -163,7 +180,7 @@ export function Header({ variant = "inner" }: HeaderProps) {
       </div>
 
       {open ? (
-        <nav className="flex flex-col gap-4 border-t border-white/10 px-6 py-6 lg:hidden">
+        <nav className="flex flex-col gap-5 border-t border-white/10 bg-ink px-6 py-8 lg:hidden">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -180,7 +197,7 @@ export function Header({ variant = "inner" }: HeaderProps) {
           ))}
           <Link
             href="/#specialites"
-            className="w-fit rounded-full border border-white px-4 py-2 text-[14px] font-semibold tracking-[0.7px] uppercase text-white"
+            className="mt-2 w-fit rounded-full border border-white px-[17px] py-[9px] text-[14px] font-semibold tracking-[0.7px] uppercase text-white transition hover:bg-white/10 focus-ring"
             onClick={() => setOpen(false)}
           >
             LA CARTE
@@ -194,23 +211,26 @@ export function Header({ variant = "inner" }: HeaderProps) {
 export function Footer() {
   return (
     <footer className="border-t border-border bg-blush">
-      <div className="mx-auto flex max-w-[1280px] flex-col items-start justify-between gap-6 px-6 py-12 md:flex-row md:items-center md:px-16">
+      <div className="mx-auto flex max-w-[1280px] flex-col gap-6 px-6 py-12 md:flex-row md:items-center md:justify-between md:px-16">
         <p className="font-serif text-[24px] font-semibold text-ink">
           {site.name}
         </p>
-        <p className="text-[16px] text-ink">{site.copyright}</p>
+        <p className="text-[16px] text-ink md:order-none">{site.copyright}</p>
         <div className="flex flex-wrap gap-6 text-[12px] font-medium uppercase tracking-wide text-muted">
-          <Link href="/mentions-legales" className="hover:text-ink">
+          <Link href="/mentions-legales" className="transition hover:text-ink">
             MENTIONS LÉGALES
           </Link>
-          <a href={`mailto:${site.email}`} className="hover:text-ink">
+          <a
+            href={`mailto:${site.email}`}
+            className="transition hover:text-ink"
+          >
             CONTACT
           </a>
           <a
             href={site.instagram}
             target="_blank"
             rel="noreferrer"
-            className="hover:text-ink"
+            className="transition hover:text-ink"
           >
             INSTAGRAM
           </a>
