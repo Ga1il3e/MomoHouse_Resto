@@ -47,39 +47,32 @@ export const branches = {
     name: "Poissonnière",
     shortLabel: "Poissonnière",
     district: "Paris 9e",
-    addressLines: ["46 Rue Poissonnière", "75009 Paris, France"],
+    addressLines: ["46 Rue Poissonnière", "75009 Paris", "France"],
     addressInline: "46 Rue Poissonnière, 75009 Paris",
     mapsUrl:
       "https://www.google.com/maps/search/?api=1&query=46+Rue+Poissonni%C3%A8re+75009+Paris",
-    email: "contact@momohouse.fr",
+    email: "poissonniere@momohouse.fr",
     phone: "+33 1 23 45 67 89",
     hours: [
       {
         days: "Lundi - Jeudi",
-        times: ["12h00 - 15h00 | 19h00 - 22h30"],
+        times: ["12h00 - 15h00", "19h00 - 22h30"],
         closed: false,
       },
       {
         days: "Vendredi - Samedi",
-        times: ["12h00 - 15h00 | 19h00 - 23h30"],
+        times: ["12h00 - 15h00", "19h00 - 23h30"],
         closed: false,
       },
-      { days: "Dimanche", times: ["Fermé"], closed: false },
+      { days: "Dimanche", times: ["Fermé"], closed: true },
     ],
+    heroEyebrow: "MOMO HOUSE",
     heroTitle: "Poissonnière",
     heroBody:
       "L'énergie vibrante du 9ème arrondissement rencontre la chaleur authentique de nos cuisines. Un espace moderne, conçu pour partager des moments intenses autour de nos spécialités.",
     sketch: "/images/poissonniere-hero.png",
     map: "/images/map-poissonniere.png",
     branchSketch: "/images/branch-poissonniere.png",
-    atmosphere: {
-      title: "L'Atmosphère",
-      paragraphs: [
-        "Inspiré par les ruelles animées de Katmandou et repensé pour l'élégance parisienne, notre restaurant de Poissonnière offre une ambiance électrique. Les murs en briques apparentes et l'éclairage tamisé créent un contraste saisissant avec les couleurs chaudes de nos plats.",
-        "C'est l'endroit idéal pour un déjeuner d'affaires décontracté ou un dîner festif entre amis, au rythme d'une playlist soigneusement sélectionnée.",
-      ],
-      image: "/images/atmosphere.png",
-    },
   },
 } as const;
 
