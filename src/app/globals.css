@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+:root {
+  --cream: #fff8f5;
+  --ink: #1e1b18;
+  --muted: #59413f;
+  --red: #7e000e;
+  --red-bright: #a11d21;
+  --gold: #fed65b;
+  --gold-soft: #ffe088;
+  --border: #e1bebb;
+  --blush: #f5ece7;
+  --closed: #ba1a1a;
+  --pink-icon: #ffdad7;
+  --hours-icon: #ffe088;
+  --contact-icon: #e5e2dc;
+  --hours-border: #e9e1dc;
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-red: var(--red);
+  --color-red-bright: var(--red-bright);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-border: var(--border);
+  --color-blush: var(--blush);
+  --color-closed: var(--closed);
+  --color-pink-icon: var(--pink-icon);
+  --color-hours-icon: var(--hours-icon);
+  --color-contact-icon: var(--contact-icon);
+  --color-hours-border: var(--hours-border);
+  --font-serif: var(--font-newsreader);
+  --font-sans: var(--font-be-vietnam);
+  --font-devanagari: var(--font-noto-devanagari);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-be-vietnam), system-ui, sans-serif;
+}
+
+.font-serif {
+  font-family: var(--font-newsreader), Georgia, serif;
+}
+
+.font-devanagari {
+  font-family: var(--font-noto-devanagari), "Noto Serif Devanagari", serif;
+}
+
+.shadow-card {
+  box-shadow:
+    0px 10px 25px -5px rgba(161, 29, 33, 0.08),
+    0px 8px 10px -6px rgba(161, 29, 33, 0.04);
+}
+
+.shadow-soft {
+  box-shadow: 0px 10px 40px -10px rgba(161, 29, 33, 0.08);
+}
