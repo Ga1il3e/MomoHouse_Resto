@@ -17,7 +17,7 @@
   --hours-border: #e9e1dc;
   --page-x: 1.5rem;
   --section-y: 5rem;
-  --header-h: 3.5rem;
+  --header-h: 4rem;
 }
 
 @media (min-width: 768px) {
@@ -80,12 +80,14 @@ body.menu-open {
 
 .nav-link {
   position: relative;
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: rgb(255 255 255 / 0.8);
-  padding-bottom: 5px;
+  color: rgb(255 255 255 / 0.78);
+  padding-block: 6px;
   transition: color 0.2s ease;
 }
 
@@ -112,8 +114,14 @@ body.menu-open {
 
 .nav-link-active {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
   color: var(--gold);
-  padding-bottom: 5px;
+  padding-block: 6px;
 }
 
 .nav-link-active::after {

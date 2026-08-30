@@ -21,25 +21,28 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`focus-ring ${active ? "nav-link-active" : "nav-link"}`}
+      className={`focus-ring whitespace-nowrap ${active ? "nav-link-active" : "nav-link"}`}
     >
       {children}
     </Link>
   );
 }
 
-function LaCarteLink({ className }: { className?: string }) {
+function BrandMark({ compact = false }: { compact?: boolean }) {
   return (
-    <Link
-      href="/#specialites"
-      className={[
-        "rounded-full border border-white px-[17px] py-[9px] text-[14px] font-semibold tracking-[0.7px] uppercase text-white transition hover:bg-white/10 focus-ring",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
-    >
-      LA CARTE
+    <Link href="/" className="group flex min-w-0 flex-col focus-ring">
+      <span
+        className={`font-serif font-semibold uppercase tracking-[-1.2px] text-white transition group-hover:text-gold-soft ${
+          compact ? "text-[20px]" : "text-[22px] xl:text-[24px]"
+        }`}
+      >
+        {site.name}
+      </span>
+      {!compact ? (
+        <span className="mt-0.5 hidden text-[9px] font-semibold tracking-[1.2px] text-gold-soft/85 uppercase sm:block xl:text-[10px]">
+          {site.tagline}
+        </span>
+      ) : null}
     </Link>
   );
 }
@@ -48,30 +51,35 @@ export function Header({ variant = "inner" }: HeaderProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [menuPath, setMenuPath] = useState(pathname);
-  const isHome = variant === "home" || pathname === "/";
+  const showTagline = variant === "home" || pathname === "/";
 
   if (pathname !== menuPath) {
     setMenuPath(pathname);
     if (open) setOpen(false);
   }
 
-  const links = [
-    { href: "/#adresses", label: "RESTAURANTS", match: false },
+  const locationLinks = [
     {
       href: "/montmartre",
-      label: "MONTMARTRE",
+      label: "Montmartre",
       match: pathname === "/montmartre",
     },
     {
       href: "/poissonniere",
-      label: "POISSONNIÈRE",
+      label: "Poissonnière",
       match: pathname === "/poissonniere",
     },
+  ];
+
+  const mobileLinks = [
+    { href: "/#adresses", label: "Restaurants", match: false },
+    ...locationLinks,
     {
       href: "/reservations",
-      label: "RÉSERVATIONS",
+      label: "Réservations",
       match: pathname === "/reservations",
     },
+    { href: "/#specialites", label: "La carte", match: false },
   ];
 
   useEffect(() => {
@@ -89,119 +97,118 @@ export function Header({ variant = "inner" }: HeaderProps) {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-ink">
-      <div
-        className={`mx-auto hidden h-14 max-w-[1280px] items-center px-6 md:px-16 lg:grid ${
-          isHome ? "grid-cols-[1fr_auto_1fr]" : "grid-cols-[auto_1fr_auto]"
-        }`}
-      >
-        {isHome ? (
-          <>
-            <div className="justify-self-start">
-              <NavLink href="/#adresses">RESTAURANTS</NavLink>
-            </div>
-            <Link
-              href="/"
-              className="flex flex-col items-center justify-center focus-ring"
-            >
-              <span className="font-serif text-[24px] font-semibold uppercase tracking-[-1.2px] text-white">
-                {site.name}
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-[1px] text-gold-soft opacity-80">
-                {site.tagline}
-              </span>
-            </Link>
-            <nav className="flex items-center justify-end gap-6">
-              <NavLink href="/montmartre" active={pathname === "/montmartre"}>
-                MONTMARTRE
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-ink/95 backdrop-blur-md">
+      <div className="mx-auto hidden max-w-[1280px] items-center gap-8 px-6 py-3.5 md:px-16 lg:grid lg:grid-cols-[minmax(0,1.1fr)_auto_minmax(0,1.1fr)]">
+        <div className="justify-self-start">
+          <BrandMark compact={!showTagline} />
+        </div>
+
+        <nav
+          aria-label="Navigation principale"
+          className="flex items-center justify-center gap-1"
+        >
+          <NavLink href="/#adresses">Restaurants</NavLink>
+          <span
+            aria-hidden
+            className="mx-3 h-3 w-px bg-white/20"
+          />
+          {locationLinks.map((link, index) => (
+            <span key={link.href} className="flex items-center">
+              {index > 0 ? (
+                <span aria-hidden className="mx-3 text-[10px] text-white/25">
+                  ·
+                </span>
+              ) : null}
+              <NavLink href={link.href} active={link.match}>
+                {link.label}
               </NavLink>
-              <NavLink
-                href="/poissonniere"
-                active={pathname === "/poissonniere"}
-              >
-                POISSONNIÈRE
-              </NavLink>
-              <NavLink
-                href="/reservations"
-                active={pathname === "/reservations"}
-              >
-                RÉSERVATIONS
-              </NavLink>
-              <LaCarteLink className="ml-2" />
-            </nav>
-          </>
-        ) : (
-          <>
-            <Link
-              href="/"
-              className="font-serif text-[24px] font-semibold uppercase tracking-[-1.2px] text-white focus-ring"
-            >
-              {site.name}
-            </Link>
-            <nav className="flex items-center justify-center gap-6">
-              {links.map((link) => (
-                <NavLink key={link.href} href={link.href} active={link.match}>
-                  {link.label}
-                </NavLink>
-              ))}
-            </nav>
-            <LaCarteLink />
-          </>
-        )}
+            </span>
+          ))}
+        </nav>
+
+        <div className="flex items-center justify-end gap-3">
+          <Link
+            href="/reservations"
+            className={`focus-ring whitespace-nowrap rounded-full px-4 py-2 text-[12px] font-semibold tracking-[0.8px] uppercase transition ${
+              pathname === "/reservations"
+                ? "bg-gold text-ink"
+                : "border border-gold/70 text-gold-soft hover:border-gold hover:bg-gold/10"
+            }`}
+          >
+            Réserver
+          </Link>
+          <Link
+            href="/#specialites"
+            className="focus-ring whitespace-nowrap rounded-full border border-white/70 px-4 py-2 text-[12px] font-semibold tracking-[0.8px] text-white uppercase transition hover:border-white hover:bg-white/10"
+          >
+            La carte
+          </Link>
+        </div>
       </div>
 
       <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between px-6 lg:hidden">
-        <Link
-          href="/"
-          className="font-serif text-[20px] font-semibold uppercase tracking-[-1px] text-white focus-ring"
-        >
-          {site.name}
-        </Link>
+        <BrandMark compact />
         <button
           type="button"
           aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
           aria-expanded={open}
-          className="flex size-10 items-center justify-center text-white focus-ring"
+          className="focus-ring flex size-10 items-center justify-center text-white"
           onClick={() => setOpen((value) => !value)}
         >
           <span className="sr-only">Menu</span>
           <span className="flex flex-col gap-1.5">
             <span
-              className={`block h-0.5 w-5 bg-white transition ${open ? "translate-y-2 rotate-45" : ""}`}
+              className={`block h-0.5 w-5 origin-center bg-white transition ${open ? "translate-y-2 rotate-45" : ""}`}
             />
             <span
               className={`block h-0.5 w-5 bg-white transition ${open ? "opacity-0" : ""}`}
             />
             <span
-              className={`block h-0.5 w-5 bg-white transition ${open ? "-translate-y-2 -rotate-45" : ""}`}
+              className={`block h-0.5 w-5 origin-center bg-white transition ${open ? "-translate-y-2 -rotate-45" : ""}`}
             />
           </span>
         </button>
       </div>
 
       {open ? (
-        <nav className="flex flex-col gap-5 border-t border-white/10 bg-ink px-6 py-8 lg:hidden">
-          {links.map((link) => (
+        <nav
+          aria-label="Menu mobile"
+          className="flex flex-col gap-1 border-t border-white/10 bg-ink px-6 py-6 lg:hidden"
+        >
+          <p className="mb-2 text-[11px] font-semibold tracking-[1.4px] text-gold-soft/70 uppercase">
+            Adresses
+          </p>
+          {mobileLinks.slice(0, 3).map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={
+              className={`rounded-lg px-3 py-3 text-[15px] font-semibold tracking-[0.4px] uppercase transition focus-ring ${
                 link.match
-                  ? "text-[14px] font-semibold tracking-[0.7px] uppercase text-gold"
-                  : "text-[14px] font-semibold tracking-[0.7px] uppercase text-white/80"
-              }
+                  ? "bg-white/5 text-gold"
+                  : "text-white/85 hover:bg-white/5 hover:text-white"
+              }`}
               onClick={() => setOpen(false)}
             >
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/#specialites"
-            className="mt-2 w-fit rounded-full border border-white px-[17px] py-[9px] text-[14px] font-semibold tracking-[0.7px] uppercase text-white transition hover:bg-white/10 focus-ring"
-            onClick={() => setOpen(false)}
-          >
-            LA CARTE
-          </Link>
+          <div className="my-4 h-px bg-white/10" />
+          <div className="flex flex-col gap-3">
+            <Link
+              href="/reservations"
+              className="focus-ring rounded-full bg-gold px-5 py-3 text-center text-[13px] font-semibold tracking-[0.8px] text-ink uppercase"
+              onClick={() => setOpen(false)}
+            >
+              Réserver une table
+            </Link>
+            <Link
+              href="/#specialites"
+              className="focus-ring rounded-full border border-white/70 px-5 py-3 text-center text-[13px] font-semibold tracking-[0.8px] text-white uppercase"
+              onClick={() => setOpen(false)}
+            >
+              La carte
+            </Link>
+          </div>
         </nav>
       ) : null}
     </header>
@@ -216,15 +223,15 @@ export function Footer() {
           {site.name}
         </p>
         <p className="text-[16px] text-ink md:order-none">{site.copyright}</p>
-        <div className="flex flex-wrap gap-6 text-[12px] font-medium uppercase tracking-wide text-muted">
+        <div className="flex flex-wrap gap-6 text-[12px] font-medium tracking-wide text-muted uppercase">
           <Link href="/mentions-legales" className="transition hover:text-ink">
-            MENTIONS LÉGALES
+            Mentions légales
           </Link>
           <a
             href={`mailto:${site.email}`}
             className="transition hover:text-ink"
           >
-            CONTACT
+            Contact
           </a>
           <a
             href={site.instagram}
@@ -232,7 +239,7 @@ export function Footer() {
             rel="noreferrer"
             className="transition hover:text-ink"
           >
-            INSTAGRAM
+            Instagram
           </a>
         </div>
       </div>
