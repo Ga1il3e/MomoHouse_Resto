@@ -155,3 +155,137 @@ export function isBranchId(
 ): value is BranchId {
   return value === "montmartre" || value === "poissonniere";
 }
+
+export type MenuTagTone = "neutral" | "veg" | "spicy" | "hot" | "crispy";
+
+export type MenuTag = {
+  label: string;
+  tone: MenuTagTone;
+};
+
+export type MenuItem = {
+  id: string;
+  name: string;
+  description: string;
+  price: string;
+  image: string;
+  imageAlt: string;
+  tags: MenuTag[];
+};
+
+export type MenuCategory = {
+  id: string;
+  title: string;
+  items: MenuItem[];
+};
+
+export type BranchMenu = {
+  branchId: BranchId;
+  eyebrow: string;
+  title: string;
+  body: string;
+  heroImage: string;
+  heroAlt: string;
+  categories: MenuCategory[];
+};
+
+export const menus: Record<BranchId, BranchMenu> = {
+  montmartre: {
+    branchId: "montmartre",
+    eyebrow: "Menu Signature",
+    title: "La Carte — Montmartre",
+    body: "Découvrez nos recettes authentiques, préparées chaque jour à la main dans notre cuisine de Montmartre. Une fusion de traditions himalayennes et de produits frais locaux.",
+    heroImage: "/images/menu/montmartre-hero.jpg",
+    heroAlt: "Intérieur du restaurant Momo House Montmartre",
+    categories: [
+      {
+        id: "les-momos",
+        title: "Les Momos (Signature)",
+        items: [
+          {
+            id: "jhol-momo",
+            name: "Jhol Momo",
+            description:
+              "Nos momos signatures plongés dans un bouillon chaud et onctueux à la tomate, sésame et épices himalayennes. Un réconfort absolu.",
+            price: "14,50 €",
+            image: "/images/menu/montmartre-jhol.jpg",
+            imageAlt: "Jhol Momo dans un bouillon tomate-sésame",
+            tags: [
+              { label: "Porc", tone: "neutral" },
+              { label: "Épicé", tone: "spicy" },
+            ],
+          },
+          {
+            id: "kothe-momo",
+            name: "Kothe Momo",
+            description:
+              "Momos mi-cuits à la vapeur, mi-poêlés pour un contraste parfait. Croustillants en dessous, fondants au-dessus. Servis avec notre sauce piquante maison.",
+            price: "13,00 €",
+            image: "/images/menu/montmartre-kothe.jpg",
+            imageAlt: "Kothe Momo mi-vapeur, mi-poêlés",
+            tags: [{ label: "Poulet", tone: "neutral" }],
+          },
+          {
+            id: "momos-vapeur",
+            name: "Momos Vapeur Classiques",
+            description:
+              "L'authenticité pure. Nos raviolis cuits à la vapeur, farce juteuse aux légumes croquants et gingembre frais.",
+            price: "12,50 €",
+            image: "/images/menu/montmartre-vapeur.jpg",
+            imageAlt: "Momos vapeur dans un panier de bambou",
+            tags: [{ label: "Végétarien", tone: "veg" }],
+          },
+        ],
+      },
+    ],
+  },
+  poissonniere: {
+    branchId: "poissonniere",
+    eyebrow: "Menu Signature",
+    title: "La Carte — Poissonnière",
+    body: "Découvrez nos spécialités népalaises, préparées avec amour et épices authentiques. Retrait ou dégustation sur place dans notre chaleureux restaurant.",
+    heroImage: "/images/menu/poissonniere-hero.jpg",
+    heroAlt: "Intérieur du restaurant Momo House Poissonnière",
+    categories: [
+      {
+        id: "les-momos",
+        title: "Les Momos",
+        items: [
+          {
+            id: "jhol-momo",
+            name: "Jhol Momo",
+            description:
+              "Momos traditionnels plongés dans un bouillon chaud et épicé aux tomates grillées et sésame. Parfait pour se réchauffer.",
+            price: "14,50 €",
+            image: "/images/menu/poissonniere-jhol.jpg",
+            imageAlt: "Jhol Momo dans un bouillon épicé",
+            tags: [
+              { label: "Épicé", tone: "spicy" },
+              { label: "Végétarien (option)", tone: "veg" },
+            ],
+          },
+          {
+            id: "chilli-momo",
+            name: "Spicy Cather (Chilli Momo)",
+            description:
+              "Momos frits puis poêlés dans une sauce pimentée maison, oignons et poivrons. Pour les amateurs de sensations fortes.",
+            price: "15,00 €",
+            image: "/images/menu/poissonniere-chilli.jpg",
+            imageAlt: "Chilli Momo nappés d'une sauce piment-ail",
+            tags: [{ label: "Très épicé", tone: "hot" }],
+          },
+          {
+            id: "golden-fried",
+            name: "Golden Fried",
+            description:
+              "Momos croustillants dorés à la perfection, servis avec notre sauce spéciale Momo House à la coriandre fraîche.",
+            price: "13,50 €",
+            image: "/images/menu/poissonniere-fried.jpg",
+            imageAlt: "Momos frits dorés avec sauce",
+            tags: [{ label: "Croustillant", tone: "crispy" }],
+          },
+        ],
+      },
+    ],
+  },
+};

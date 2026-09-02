@@ -42,7 +42,7 @@ function Hero() {
         </div>
 
         <div className="animate-hero-delay-2 mt-10 flex flex-col gap-4 sm:flex-row sm:gap-6">
-          <Button href="/#specialites" variant="primary" className="px-16">
+          <Button href="/carte" variant="primary" className="px-16">
             VIEW MENU
           </Button>
           <Button href="/#adresses" variant="ghost" className="px-16">

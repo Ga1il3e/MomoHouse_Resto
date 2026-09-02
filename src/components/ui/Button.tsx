@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
-type Variant = "primary" | "ghost" | "ink" | "outlineMuted";
+type Variant = "primary" | "ghost" | "ink" | "outline" | "outlineMuted";
 
 const variants: Record<Variant, string> = {
   primary:
@@ -9,6 +9,8 @@ const variants: Record<Variant, string> = {
   ghost:
     "rounded-full border border-white px-10 py-[13px] text-white hover:bg-white/10",
   ink: "rounded-none bg-red px-6 py-3 text-white shadow-soft hover:brightness-110",
+  outline:
+    "rounded-none border border-red bg-transparent px-6 py-3 text-red hover:bg-red/5",
   outlineMuted:
     "rounded-full border border-border px-4 py-1 text-[10px] tracking-[1px] text-muted",
 };

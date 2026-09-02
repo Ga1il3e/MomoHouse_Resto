@@ -22,13 +22,14 @@ export default function MontmartrePage() {
             <p className="mt-6 max-w-[448px] text-[18px] leading-7 text-muted">
               {branch.heroBody}
             </p>
-            <Button
-              href="/reservations?branch=montmartre"
-              variant="ink"
-              className="mt-6 w-fit"
-            >
-              RÉSERVER UNE TABLE
-            </Button>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button href="/reservations?branch=montmartre" variant="ink">
+                RÉSERVER UNE TABLE
+              </Button>
+              <Button href="/montmartre/carte" variant="outline">
+                VOIR LA CARTE
+              </Button>
+            </div>
           </div>
           <div className="relative md:col-span-7">
             <div className="absolute top-[-32px] right-[-32px] size-64 rounded-full bg-[#e9c349] opacity-50 blur-[32px] mix-blend-multiply" />

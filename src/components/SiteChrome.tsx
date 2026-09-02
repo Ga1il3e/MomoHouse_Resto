@@ -62,14 +62,25 @@ export function Header({ variant = "inner" }: HeaderProps) {
     {
       href: "/montmartre",
       label: "Montmartre",
-      match: pathname === "/montmartre",
+      match: pathname === "/montmartre" || pathname.startsWith("/montmartre/"),
     },
     {
       href: "/poissonniere",
       label: "Poissonnière",
-      match: pathname === "/poissonniere",
+      match:
+        pathname === "/poissonniere" || pathname.startsWith("/poissonniere/"),
     },
   ];
+
+  const carteHref = pathname.startsWith("/montmartre")
+    ? "/montmartre/carte"
+    : pathname.startsWith("/poissonniere")
+      ? "/poissonniere/carte"
+      : "/carte";
+  const carteActive =
+    pathname === "/carte" ||
+    pathname === "/montmartre/carte" ||
+    pathname === "/poissonniere/carte";
 
   const mobileLinks = [
     { href: "/#adresses", label: "Restaurants", match: false },
@@ -79,7 +90,7 @@ export function Header({ variant = "inner" }: HeaderProps) {
       label: "Réservations",
       match: pathname === "/reservations",
     },
-    { href: "/#specialites", label: "La carte", match: false },
+    { href: carteHref, label: "La carte", match: carteActive },
   ];
 
   useEffect(() => {
@@ -108,10 +119,7 @@ export function Header({ variant = "inner" }: HeaderProps) {
           className="flex items-center justify-center gap-1"
         >
           <NavLink href="/#adresses">Restaurants</NavLink>
-          <span
-            aria-hidden
-            className="mx-3 h-3 w-px bg-white/20"
-          />
+          <span aria-hidden className="mx-3 h-3 w-px bg-white/20" />
           {locationLinks.map((link, index) => (
             <span key={link.href} className="flex items-center">
               {index > 0 ? (
@@ -138,8 +146,12 @@ export function Header({ variant = "inner" }: HeaderProps) {
             Réserver
           </Link>
           <Link
-            href="/#specialites"
-            className="focus-ring whitespace-nowrap rounded-full border border-white/70 px-4 py-2 text-[12px] font-semibold tracking-[0.8px] text-white uppercase transition hover:border-white hover:bg-white/10"
+            href={carteHref}
+            className={`focus-ring whitespace-nowrap rounded-full px-4 py-2 text-[12px] font-semibold tracking-[0.8px] text-white uppercase transition ${
+              carteActive
+                ? "border border-white bg-white/10"
+                : "border border-white/70 hover:border-white hover:bg-white/10"
+            }`}
           >
             La carte
           </Link>
@@ -202,7 +214,7 @@ export function Header({ variant = "inner" }: HeaderProps) {
               Réserver une table
             </Link>
             <Link
-              href="/#specialites"
+              href={carteHref}
               className="focus-ring rounded-full border border-white/70 px-5 py-3 text-center text-[13px] font-semibold tracking-[0.8px] text-white uppercase"
               onClick={() => setOpen(false)}
             >
