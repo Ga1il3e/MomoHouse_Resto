@@ -121,8 +121,16 @@ function ReservationForm() {
               <div className="grid gap-4 sm:grid-cols-2">
                 {(
                   [
-                    ["montmartre", "Montmartre", "Paris 18e"],
-                    ["poissonniere", "Poissonnière", "Paris 9e"],
+                    [
+                      "montmartre",
+                      branches.montmartre.name,
+                      branches.montmartre.district,
+                    ],
+                    [
+                      "poissonniere",
+                      branches.poissonniere.name,
+                      branches.poissonniere.district,
+                    ],
                   ] as const
                 ).map(([id, name, district]) => {
                   const selected = branch === id;

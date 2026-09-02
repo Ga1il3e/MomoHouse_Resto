@@ -3,7 +3,7 @@ import { MenuPage } from "@/components/MenuPage";
 import { menus } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "La Carte — Montmartre | Momo House",
+  title: "Commandes — Montmartre | Momo House",
   description:
     "La carte de Momo House Montmartre : jhol momo, kothe momo et momos vapeur préparés à la main.",
 };

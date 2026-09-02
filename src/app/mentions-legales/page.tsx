@@ -18,7 +18,7 @@ export default function MentionsLegalesPage() {
               <br />
               85 Rue Montmartre, 75002 Paris
               <br />
-              46 Rue Poissonnière, 75009 Paris
+              46 Rue Poissonnière, 75010 Paris
               <br />
               Email :{" "}
               <a className="text-red underline" href={`mailto:${site.email}`}>

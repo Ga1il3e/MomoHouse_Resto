@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { branches } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "La Carte | Momo House",
+  title: "Commandes | Momo House",
   description:
     "Choisissez une adresse pour découvrir la carte de Momo House à Montmartre ou Poissonnière.",
 };
@@ -31,7 +31,7 @@ export default function CarteChooserPage() {
   return (
     <SiteShell variant="inner">
       <Section tone="cream" width={1152}>
-        <SectionHeading title="La Carte" underline="red-bright" />
+        <SectionHeading title="Commandes" underline="red-bright" />
         <p className="mx-auto mb-12 max-w-2xl text-center text-[16px] leading-6 text-muted md:text-[18px] md:leading-7">
           Chaque salle a sa propre carte. Choisissez une adresse pour voir les
           momos du jour, préparés à la main.
@@ -45,7 +45,7 @@ export default function CarteChooserPage() {
               >
                 <Image
                   src={image}
-                  alt={`La carte ${branch.name}`}
+                  alt={`Commandes ${branch.name}`}
                   fill
                   className="object-cover transition duration-500 group-hover:scale-[1.03]"
                   sizes="(max-width: 768px) 100vw, 50vw"
@@ -62,7 +62,7 @@ export default function CarteChooserPage() {
                 href={href}
                 className="mt-4 border-b border-red pb-[5px] text-[12px] font-medium tracking-[1.2px] uppercase text-red transition hover:border-gold hover:text-gold focus-ring"
               >
-                Voir la carte
+                Commandes
               </Link>
             </article>
           ))}

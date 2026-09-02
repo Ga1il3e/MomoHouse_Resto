@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { SiteShell } from "@/components/SiteChrome";
 import { Button } from "@/components/ui/Button";
 import { branches, type BranchMenu, type MenuTagTone } from "@/lib/content";
@@ -28,19 +29,23 @@ export function MenuPage({ menu }: { menu: BranchMenu }) {
 
   return (
     <SiteShell variant="inner">
-      <section className="relative flex h-[409px] w-full items-center justify-center overflow-hidden px-6 text-center md:h-[512px] md:px-16">
-        <div className="absolute inset-0">
+      <section className="relative flex h-[409px] w-full items-center justify-center px-6 text-center md:h-[512px] md:px-16">
+        <Link
+          href={`/${menu.branchId}`}
+          aria-label={`Voir le restaurant ${branch.name}`}
+          className="absolute inset-0 overflow-hidden focus-ring"
+        >
           <Image
             src={menu.heroImage}
             alt={menu.heroAlt}
             fill
             priority
-            className="object-cover"
+            className="object-cover transition duration-500 hover:scale-[1.02]"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
-        <div className="relative z-10 flex max-w-2xl flex-col items-center">
+          <span className="glass-hero absolute inset-0 backdrop-blur-sm backdrop-saturate-150" />
+        </Link>
+        <div className="pointer-events-none relative z-10 mx-auto flex max-w-2xl flex-col items-center px-6 py-7 text-center md:px-12 md:py-10">
           <p className="mb-1 text-[12px] font-medium tracking-[1.2px] text-white/90 uppercase">
             {menu.eyebrow}
           </p>
@@ -71,7 +76,7 @@ export function MenuPage({ menu }: { menu: BranchMenu }) {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1280px] space-y-20 px-6 py-12 md:px-16 md:py-20">
+      <div className="mx-auto max-w-[1280px] space-y-16 px-6 py-8 md:px-16 md:py-12">
         {menu.categories.map((category) => (
           <section key={category.id} id={category.id} className="scroll-mt-36">
             <div className="mb-10 flex items-end justify-between gap-4 border-b border-[#e1bebb] pb-3">

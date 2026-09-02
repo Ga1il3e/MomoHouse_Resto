@@ -90,7 +90,7 @@ export function Header({ variant = "inner" }: HeaderProps) {
       label: "Réservations",
       match: pathname === "/reservations",
     },
-    { href: carteHref, label: "La carte", match: carteActive },
+    { href: carteHref, label: "Commandes", match: carteActive },
   ];
 
   useEffect(() => {
@@ -153,7 +153,7 @@ export function Header({ variant = "inner" }: HeaderProps) {
                 : "border border-white/70 hover:border-white hover:bg-white/10"
             }`}
           >
-            La carte
+            Commandes
           </Link>
         </div>
       </div>
@@ -218,7 +218,7 @@ export function Header({ variant = "inner" }: HeaderProps) {
               className="focus-ring rounded-full border border-white/70 px-5 py-3 text-center text-[13px] font-semibold tracking-[0.8px] text-white uppercase"
               onClick={() => setOpen(false)}
             >
-              La carte
+              Commandes
             </Link>
           </div>
         </nav>

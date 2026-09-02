@@ -4,7 +4,13 @@ import { SiteShell } from "@/components/SiteChrome";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { branches, craftSteps, dishes, testimonial } from "@/lib/content";
+import {
+  branches,
+  craftSteps,
+  dishes,
+  imageFocusClass,
+  testimonial,
+} from "@/lib/content";
 
 function Hero() {
   return (
@@ -43,7 +49,7 @@ function Hero() {
 
         <div className="animate-hero-delay-2 mt-10 flex flex-col gap-4 sm:flex-row sm:gap-6">
           <Button href="/carte" variant="primary" className="px-16">
-            VIEW MENU
+            COMMANDES
           </Button>
           <Button href="/#adresses" variant="ghost" className="px-16">
             LES ADRESSES
@@ -62,25 +68,28 @@ function Branches() {
       <div className="grid gap-12 md:grid-cols-2 md:gap-20">
         {items.map((branch) => (
           <article key={branch.id} className="flex flex-col items-center">
-            <div className="relative mb-6 aspect-[536/402] w-full overflow-hidden shadow-sm">
+            <Link
+              href={`/${branch.id}`}
+              className="group relative mb-6 aspect-[536/402] w-full overflow-hidden shadow-sm focus-ring"
+            >
               <Image
                 src={branch.branchSketch}
                 alt={`Illustration ${branch.name}`}
                 fill
-                className="object-cover object-top transition duration-500 hover:scale-[1.02]"
+                className={`${imageFocusClass(branch.imageFocus)} transition duration-500 group-hover:scale-[1.03]`}
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
-            </div>
+            </Link>
             <h3 className="font-serif text-[24px] font-semibold text-ink">
               {branch.name}
             </h3>
             <p className="mt-1 text-center text-[16px] leading-6 text-muted">
               {branch.addressLines[0]}
               <br />
-              {branch.id === "montmartre" ? "75002 Paris" : "75009 Paris"}
+              {branch.addressLines[1]}
             </p>
             <Link
-              href={`/${branch.id === "poissonniere" ? "poissonniere" : "montmartre"}`}
+              href={`/${branch.id}`}
               className="mt-4 border-b border-red pb-[5px] text-[12px] font-medium tracking-[1.2px] uppercase text-red transition hover:border-gold hover:text-gold focus-ring"
             >
               VOIR LA SALLE

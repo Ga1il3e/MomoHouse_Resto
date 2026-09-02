@@ -5,8 +5,15 @@ export const site = {
   tagline: "STREET FOOD DU NÉPAL & DU TIBET",
   copyright: "© 2026 MOMO HOUSE. Tous droits réservés.",
   email: "contact@momohouse.fr",
-  phone: "+33 1 23 45 67 89",
-  instagram: "https://instagram.com/momohouse",
+  phone: "+33 1 42 36 57 21",
+  instagram: "https://instagram.com/momo_house_fr",
+};
+
+export type GoogleReview = {
+  author: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+  quote: string;
+  source: "Google";
 };
 
 export const branches = {
@@ -14,65 +21,134 @@ export const branches = {
     id: "montmartre" as const,
     name: "Montmartre",
     shortLabel: "Montmartre",
-    district: "Paris 18e",
+    district: "Paris 2e",
     addressLines: ["85 Rue Montmartre", "75002 Paris", "France"],
     addressInline: "85 Rue Montmartre, 75002 Paris",
-    mapsUrl:
-      "https://www.google.com/maps/search/?api=1&query=85+Rue+Montmartre+75002+Paris",
+    mapsUrl: "https://maps.app.goo.gl/H2cmVp1GPnp1wSUB7",
+    reviewsUrl:
+      "https://search.google.com/local/reviews?placeid=ChIJLSDxUwRv5kcRb4_U-EzFOGQ",
+    writeReviewUrl:
+      "https://search.google.com/local/writereview?placeid=ChIJLSDxUwRv5kcRb4_U-EzFOGQ",
     email: "montmartre@momohouse.fr",
-    phone: "+33 1 00 00 00 00",
+    phone: "+33 6 06 88 72 62",
+    metro: "Sentier (ligne 3) · Bourse (ligne 3)",
+    amenities: [
+      "Sur place",
+      "À emporter",
+      "Réservation",
+      "Paiement sans contact",
+    ],
+    website: "https://momo-house-montmartre.fr",
+    googleRating: 4.7,
+    googleReviewCount: 208,
     hours: [
       {
-        days: "Lundi - Jeudi",
-        times: ["12h00 - 14h30", "19h00 - 22h30"],
+        days: "Lundi",
+        times: ["12h00 - 14h30"],
         closed: false,
       },
       {
-        days: "Vendredi - Samedi",
-        times: ["12h00 - 15h00", "19h00 - 23h00"],
+        days: "Mardi - Samedi",
+        times: ["12h00 - 14h30", "18h00 - 22h30"],
         closed: false,
       },
       { days: "Dimanche", times: ["Fermé"], closed: true },
     ],
+    reviews: [
+      {
+        author: "Anne R.",
+        rating: 5 as const,
+        quote:
+          "Équipe super sympa, momos plutôt bons. Je n'ai pas goûté à tout mais dans l'ensemble une adresse à garder pour une prochaine sortie.",
+        source: "Google" as const,
+      },
+      {
+        author: "Jacobin J.",
+        rating: 5 as const,
+        quote:
+          "Service excellent, et des plats dépaysants, et très bons. Nous avons passé un agréable moment. On y retourne.",
+        source: "Google" as const,
+      },
+      {
+        author: "Antonit",
+        rating: 5 as const,
+        quote:
+          "First time I tried Nepali food and I loved it. Service is so fast and the mood is cozy. You can share a lot of dishes.",
+        source: "Google" as const,
+      },
+    ] satisfies GoogleReview[],
     heroEyebrow: "MOMO HOUSE",
     heroTitle: "Montmartre",
     heroBody:
-      "Niché au cœur du 2ème arrondissement, notre établissement historique vous accueille dans une atmosphère chaleureuse et boisée. L'essence de la street food népalaise, servie avec élégance et authenticité.",
+      "Niché au cœur du 2ème arrondissement, notre établissement vous accueille dans une atmosphère chaleureuse. L'essence de la street food népalaise, servie avec élégance et authenticité.",
     sketch: "/images/montmartre-hero.png",
     map: "/images/map-montmartre.png",
     branchSketch: "/images/branch-montmartre.png",
+    imageFocus: "center" as const,
   },
   poissonniere: {
     id: "poissonniere" as const,
     name: "Poissonnière",
     shortLabel: "Poissonnière",
-    district: "Paris 9e",
-    addressLines: ["46 Rue Poissonnière", "75009 Paris", "France"],
-    addressInline: "46 Rue Poissonnière, 75009 Paris",
-    mapsUrl:
-      "https://www.google.com/maps/search/?api=1&query=46+Rue+Poissonni%C3%A8re+75009+Paris",
+    district: "Paris 10e",
+    addressLines: ["46 Rue Poissonnière", "75010 Paris", "France"],
+    addressInline: "46 Rue Poissonnière, 75010 Paris",
+    mapsUrl: "https://maps.app.goo.gl/SrJprbnSJDc3NNDKA",
+    reviewsUrl:
+      "https://search.google.com/local/reviews?placeid=ChIJf0_2xJVv5kcR856F79dvS3w",
+    writeReviewUrl:
+      "https://search.google.com/local/writereview?placeid=ChIJf0_2xJVv5kcR856F79dvS3w",
     email: "poissonniere@momohouse.fr",
-    phone: "+33 1 23 45 67 89",
+    phone: "+33 1 42 36 57 21",
+    metro: "Poissonnière (ligne 7) · Bonne Nouvelle (lignes 8 et 9)",
+    amenities: [
+      "Sur place",
+      "À emporter",
+      "Livraison",
+      "Terrasse",
+      "Réservation",
+    ],
+    website: "https://momo-house.fr",
+    googleRating: 4.7,
+    googleReviewCount: 1087,
     hours: [
       {
-        days: "Lundi - Jeudi",
-        times: ["12h00 - 15h00", "19h00 - 22h30"],
+        days: "Lundi - Dimanche",
+        times: ["12h00 - 14h30", "18h00 - 22h00"],
         closed: false,
+      },
+    ],
+    reviews: [
+      {
+        author: "Prajowl Adhikari",
+        rating: 5 as const,
+        quote:
+          "10 out of 5 in food and service. The momos were as good as back in Nepal. The décor hit a nostalgic vibe which took us back home.",
+        source: "Google" as const,
       },
       {
-        days: "Vendredi - Samedi",
-        times: ["12h00 - 15h00", "19h00 - 23h30"],
-        closed: false,
+        author: "Nina Treboux",
+        rating: 5 as const,
+        quote:
+          "Honestly one of the best lunch spots in the neighborhood. They’re super welcoming and the atmosphere is great. The food is awesome.",
+        source: "Google" as const,
       },
-      { days: "Dimanche", times: ["Fermé"], closed: true },
-    ],
+      {
+        author: "Carol Mackin",
+        rating: 5 as const,
+        quote:
+          "Delicious and served fast. Great flavor, and you can add more spice. We shared fried, steamed and soup momos. Very nice staff too.",
+        source: "Google" as const,
+      },
+    ] satisfies GoogleReview[],
     heroEyebrow: "MOMO HOUSE",
     heroTitle: "Poissonnière",
     heroBody:
-      "L'énergie vibrante du 9ème arrondissement rencontre la chaleur authentique de nos cuisines. Un espace moderne, conçu pour partager des moments intenses autour de nos spécialités.",
-    sketch: "/images/poissonniere-hero.png",
+      "Petite salle, grande générosité. Au 10ème, nos momos se dégustent sur place ou à emporter, dans une atmosphère chaleureuse tout près du métro Poissonnière.",
+    sketch: "/images/branch-poissonniere.png",
     map: "/images/map-poissonniere.png",
     branchSketch: "/images/branch-poissonniere.png",
+    imageFocus: "storefront" as const,
   },
 } as const;
 
@@ -156,6 +232,34 @@ export function isBranchId(
   return value === "montmartre" || value === "poissonniere";
 }
 
+export function otherBranchId(id: BranchId): BranchId {
+  switch (id) {
+    case "montmartre":
+      return "poissonniere";
+    case "poissonniere":
+      return "montmartre";
+    default: {
+      const _exhaustive: never = id;
+      return _exhaustive;
+    }
+  }
+}
+
+export function imageFocusClass(
+  focus: (typeof branches)[BranchId]["imageFocus"],
+): string {
+  switch (focus) {
+    case "center":
+      return "object-cover object-center";
+    case "storefront":
+      return "object-cover object-top";
+    default: {
+      const _exhaustive: never = focus;
+      return _exhaustive;
+    }
+  }
+}
+
 export type MenuTagTone = "neutral" | "veg" | "spicy" | "hot" | "crispy";
 
 export type MenuTag = {
@@ -193,7 +297,7 @@ export const menus: Record<BranchId, BranchMenu> = {
   montmartre: {
     branchId: "montmartre",
     eyebrow: "Menu Signature",
-    title: "La Carte — Montmartre",
+    title: "Commandes — Montmartre",
     body: "Découvrez nos recettes authentiques, préparées chaque jour à la main dans notre cuisine de Montmartre. Une fusion de traditions himalayennes et de produits frais locaux.",
     heroImage: "/images/menu/montmartre-hero.jpg",
     heroAlt: "Intérieur du restaurant Momo House Montmartre",
@@ -242,7 +346,7 @@ export const menus: Record<BranchId, BranchMenu> = {
   poissonniere: {
     branchId: "poissonniere",
     eyebrow: "Menu Signature",
-    title: "La Carte — Poissonnière",
+    title: "Commandes — Poissonnière",
     body: "Découvrez nos spécialités népalaises, préparées avec amour et épices authentiques. Retrait ou dégustation sur place dans notre chaleureux restaurant.",
     heroImage: "/images/menu/poissonniere-hero.jpg",
     heroAlt: "Intérieur du restaurant Momo House Poissonnière",
