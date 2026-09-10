@@ -80,16 +80,16 @@
     letter-spacing: 0.08em;
   }
 
-  /* Hero wordmark — capped so it does not fill the viewport at 100% zoom */
+  /* Hero wordmark — bold but not viewport-filling */
   .text-hero {
-    font-size: clamp(3.5rem, 11vw, 9rem);
+    font-size: clamp(3.25rem, 10vw, 7.5rem);
     line-height: 0.85;
     letter-spacing: -0.04em;
     font-weight: 800;
   }
 
   .text-section-title {
-    font-size: clamp(2.5rem, 8vw, 8rem);
+    font-size: clamp(2.25rem, 7vw, 6.75rem);
     line-height: 0.9;
     letter-spacing: -0.03em;
     font-weight: 800;
@@ -351,9 +351,9 @@
 
 @media (max-width: 768px) {
   .text-hero {
-    font-size: clamp(3.25rem, 16vw, 5.5rem);
+    font-size: clamp(3rem, 15vw, 5rem);
   }
   .text-section-title {
-    font-size: clamp(2rem, 10vw, 4rem);
+    font-size: clamp(1.85rem, 9vw, 3.5rem);
   }
 }

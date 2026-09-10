@@ -47,7 +47,7 @@ export default function MomoSection() {
         <div className="mt-8 grid md:grid-cols-[1fr_auto] gap-8 md:gap-16 items-start">
           {/* Left: Giant headline */}
           <div style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateX(0)' : 'translateX(-40px)', transition: 'all 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s' }}>
-            <h2 className="font-display uppercase" style={{ fontSize: 'clamp(3.5rem, 12vw, 12rem)', color: 'var(--foreground)', lineHeight: 0.82, letterSpacing: '-0.04em' }}>
+            <h2 className="font-display uppercase" style={{ fontSize: 'clamp(3rem, 10vw, 10rem)', color: 'var(--foreground)', lineHeight: 0.82, letterSpacing: '-0.04em' }}>
               {t?.momo?.headline1}<br />
               {t?.momo?.headline2}<br />
               <span style={{ color: 'var(--primary)' }}>{t?.momo?.headline3}</span><br />

@@ -40,7 +40,7 @@ export default function BrandStory() {
               <span className="text-annotation block mb-4" style={{ color: 'var(--primary)' }}>
                 {t?.brand?.label}
               </span>
-              <h2 className="font-display uppercase" style={{ fontSize: 'clamp(3.5rem, 9vw, 9rem)', color: 'var(--foreground)', lineHeight: 0.85, letterSpacing: '-0.04em' }}>
+              <h2 className="font-display uppercase" style={{ fontSize: 'clamp(3rem, 7.5vw, 7.5rem)', color: 'var(--foreground)', lineHeight: 0.85, letterSpacing: '-0.04em' }}>
                 {t?.brand?.headline1}<br />
                 <span style={{ color: 'var(--primary)' }}>{t?.brand?.headline2}</span><br />
                 {t?.brand?.headline3}

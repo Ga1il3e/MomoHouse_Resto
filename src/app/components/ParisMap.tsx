@@ -60,7 +60,7 @@ export default function ParisMap() {
             <span className="text-annotation block mb-3" style={{ color: 'var(--primary)', letterSpacing: '0.2em' }}>
               {t?.map?.label}
             </span>
-            <h2 className="font-display uppercase" style={{ fontSize: 'clamp(2.5rem, 7vw, 7rem)', color: 'var(--foreground)', lineHeight: 0.88, letterSpacing: '-0.04em' }}>
+            <h2 className="font-display uppercase" style={{ fontSize: 'clamp(2.25rem, 6vw, 6rem)', color: 'var(--foreground)', lineHeight: 0.88, letterSpacing: '-0.04em' }}>
               {t?.map?.headline?.split('\n')?.map((line: string, i: number) => (
                 <React.Fragment key={i}>{line}{i === 0 && <br />}</React.Fragment>
               ))}

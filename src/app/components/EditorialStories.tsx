@@ -146,7 +146,7 @@ export default function EditorialStories() {
             <h2
               className="font-display uppercase"
               style={{
-                fontSize: 'clamp(2.8rem, 8vw, 8rem)',
+                fontSize: 'clamp(2.5rem, 7vw, 6.75rem)',
                 color: 'var(--foreground)',
                 lineHeight: 0.85,
                 letterSpacing: '-0.04em'

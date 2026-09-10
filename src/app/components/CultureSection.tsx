@@ -44,9 +44,9 @@ export default function CultureSection() {
 
         {/* Main headline */}
         <div className="mt-8 md:mt-12" style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(40px)', transition: 'all 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s' }}>
-          <h2 className="font-display uppercase" style={{ fontSize: 'clamp(3rem, 10vw, 10rem)', color: 'var(--primary-foreground)', lineHeight: 0.85, letterSpacing: '-0.04em' }}>
+          <h2 className="font-display uppercase" style={{ fontSize: 'clamp(2.75rem, 8.5vw, 8.5rem)', color: 'var(--primary-foreground)', lineHeight: 0.85, letterSpacing: '-0.04em' }}>
             {t?.culture?.headline1}<br />
-            <span style={{ color: 'var(--primary)', fontSize: 'clamp(1.5rem, 4vw, 4rem)', letterSpacing: '0.1em', fontWeight: 300 }}>
+            <span style={{ color: 'var(--primary)', fontSize: 'clamp(1.35rem, 3.5vw, 3.5rem)', letterSpacing: '0.1em', fontWeight: 300 }}>
               {t?.culture?.headline2}
             </span><br />
             {t?.culture?.headline3}
