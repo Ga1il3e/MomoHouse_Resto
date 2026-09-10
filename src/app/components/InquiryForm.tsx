@@ -3,6 +3,7 @@
 import React, { useEffect, useId, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { getLocation, locations, type Location } from '@/data/locations';
+import DatePicker from '@/app/components/DatePicker';
 
 type HouseId = Location['id'];
 
@@ -582,18 +583,15 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
               error={errors.date}
               isFr={isFr}
             >
-              <input
+              <DatePicker
                 id={`${uid}-date`}
-                type="date"
-                min={today}
                 value={formData.date}
-                onChange={(e) => handleChange('date', e.target.value)}
+                min={today}
+                hasError={Boolean(errors.date)}
+                isFr={isFr}
+                placeholder={isFr ? 'Choisir une date' : 'Choose a date'}
+                onChange={(next) => handleChange('date', next)}
                 onBlur={() => handleBlur('date')}
-                style={{
-                  ...fieldShell(Boolean(errors.date)),
-                  colorScheme: 'dark',
-                  caretColor: 'var(--primary)',
-                }}
               />
             </Field>
 
