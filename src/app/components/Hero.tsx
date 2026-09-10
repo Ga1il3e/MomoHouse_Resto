@@ -134,10 +134,10 @@ export default function Hero() {
         <div
           className="absolute hidden lg:block"
           style={{
-            top: '18%',
-            right: '4%',
-            width: '320px',
-            height: '400px',
+            top: '14%',
+            right: '3%',
+            width: '380px',
+            height: '475px',
             transform: `translate(${parallax.x * 1.6}px, ${parallax.y * 1.2}px)`,
           }}
         >
@@ -148,7 +148,7 @@ export default function Hero() {
               fill
               className="object-cover object-center"
               style={{ opacity: 0.95 }}
-              sizes="320px"
+              sizes="380px"
               priority
             />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 55%, var(--background) 100%)', opacity: 0.55 }} />
