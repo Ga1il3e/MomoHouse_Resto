@@ -80,22 +80,23 @@
     letter-spacing: 0.08em;
   }
 
+  /* Tuned ~0.8× prior scales so 100% browser zoom matches the previous ~80% look */
   .text-hero {
-    font-size: clamp(4rem, 18vw, 18rem);
+    font-size: clamp(3.2rem, 14.4vw, 14.4rem);
     line-height: 0.85;
     letter-spacing: -0.04em;
     font-weight: 800;
   }
 
   .text-section-title {
-    font-size: clamp(2.5rem, 8vw, 8rem);
+    font-size: clamp(2rem, 6.4vw, 6.4rem);
     line-height: 0.9;
     letter-spacing: -0.03em;
     font-weight: 800;
   }
 
   .text-location-title {
-    font-size: clamp(2rem, 5vw, 5.5rem);
+    font-size: clamp(1.6rem, 4vw, 4.4rem);
     line-height: 0.85;
     letter-spacing: -0.04em;
     font-weight: 800;
@@ -350,9 +351,9 @@
 
 @media (max-width: 768px) {
   .text-hero {
-    font-size: clamp(4.5rem, 22vw, 8rem);
+    font-size: clamp(3.6rem, 17.6vw, 6.4rem);
   }
   .text-section-title {
-    font-size: clamp(2rem, 10vw, 4rem);
+    font-size: clamp(1.6rem, 8vw, 3.2rem);
   }
 }

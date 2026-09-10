@@ -115,46 +115,45 @@ export default function Hero() {
         aria-hidden="true"
       >
         <div className="absolute momo-float" style={{ top: '12%', left: '6%', transform: `translate(${parallax.x * -1.4}px, ${parallax.y * -1.2}px)` }}>
-          <MomoSVG size={90} opacity={0.35} />
+          <MomoSVG size={72} opacity={0.35} />
         </div>
         <div className="absolute momo-float-delayed" style={{ top: '8%', right: '8%', transform: `translate(${parallax.x * 1.8}px, ${parallax.y * 1.0}px)` }}>
-          <MomoSVG size={130} opacity={0.2} />
+          <MomoSVG size={104} opacity={0.2} />
         </div>
         <div className="absolute momo-drift" style={{ bottom: '15%', left: '3%', transform: `translate(${parallax.x * -2.0}px, ${parallax.y * -0.8}px)` }}>
-          <MomoSVG size={160} opacity={0.15} />
+          <MomoSVG size={128} opacity={0.15} />
         </div>
         <div className="absolute momo-float" style={{ bottom: '20%', right: '5%', transform: `translate(${parallax.x * 1.5}px, ${parallax.y * 1.6}px)` }}>
-          <MomoSVG size={100} opacity={0.25} />
+          <MomoSVG size={80} opacity={0.25} />
         </div>
         <div className="absolute momo-float-delayed hidden md:block" style={{ top: '45%', right: '15%', transform: `translate(${parallax.x * 1.2}px, ${parallax.y * -1.4}px)` }}>
-          <MomoSVG size={60} opacity={0.3} />
+          <MomoSVG size={48} opacity={0.3} />
         </div>
 
-        {/* Momo food image — editorial float */}
+        {/* Storefront sign — editorial float */}
         <div
           className="absolute hidden lg:block"
           style={{
-            top: '18%',
-            right: '4%',
-            width: '320px',
-            height: '400px',
+            top: '20%',
+            right: '5%',
+            width: '256px',
+            height: '320px',
             transform: `translate(${parallax.x * 1.6}px, ${parallax.y * 1.2}px)`,
           }}
         >
-          <div className="relative w-full h-full" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="relative w-full h-full overflow-hidden" style={{ border: '1px solid rgba(28,28,26,0.08)' }}>
             <Image
-              src="/assets/images/momo_hero_steamed.png"
-              alt="Steamed Nepali momos with delicate pleated folds on a dark slate plate"
+              src="/assets/images/momo_hero_sign.jpg"
+              alt="Momo House red storefront sign and lantern against a Paris sky"
               fill
-              className="object-cover"
-              style={{ opacity: 0.85 }}
+              className="object-cover object-center"
+              style={{ opacity: 0.95 }}
+              sizes="256px"
               priority
             />
-            {/* Overlay tint to match brand palette */}
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 60%, var(--background) 100%)', opacity: 0.6 }} />
-            {/* Editorial label */}
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 55%, var(--background) 100%)', opacity: 0.55 }} />
             <div className="absolute bottom-3 left-3">
-              <span className="text-annotation" style={{ color: 'var(--primary)', fontSize: '0.5rem', letterSpacing: '0.2em' }}>STEAMED / VAPEUR</span>
+              <span className="text-annotation" style={{ color: 'var(--primary)', fontSize: '0.5rem', letterSpacing: '0.2em' }}>PARIS · ENSEIGNE</span>
             </div>
           </div>
         </div>
