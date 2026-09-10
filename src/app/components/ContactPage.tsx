@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import Navbar from '@/app/components/Navbar';
+import InquiryForm from '@/app/components/InquiryForm';
 import Footer from '@/components/Footer';
 import { locations } from '@/data/locations';
 
@@ -159,9 +160,23 @@ export default function ContactPage({ houseId }: ContactPageProps) {
                 <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 8 }}>
                   {locale === 'fr' ? 'RÉSERVATIONS' : 'RESERVATIONS'}
                 </p>
-                <p style={{ fontSize: '0.85rem', color: 'var(--foreground)', lineHeight: 1.5 }}>
-                  {locale === 'fr' ?'Appelez-nous pour réserver. [VERIFY si outil de réservation disponible]' :'Call us to reserve. [VERIFY if booking tool available]'}
+                <p style={{ fontSize: '0.85rem', color: 'var(--foreground)', lineHeight: 1.5, marginBottom: 12 }}>
+                  {locale === 'fr'
+                    ? `Réservez une table à Momo House ${houseName} — la maison est déjà sélectionnée.`
+                    : `Reserve a table at Momo House ${houseName} — this house is already selected.`}
                 </p>
+                <a
+                  href="#reserve"
+                  className="text-annotation"
+                  style={{
+                    fontSize: '0.55rem',
+                    letterSpacing: '0.15em',
+                    color: 'var(--primary)',
+                    textDecoration: 'none',
+                  }}
+                >
+                  {locale === 'fr' ? 'FORMULAIRE ↓' : 'FORM ↓'}
+                </a>
               </div>
             </div>
           </div>
@@ -339,7 +354,7 @@ export default function ContactPage({ houseId }: ContactPageProps) {
         </section>
 
         {/* Sister house */}
-        <section style={{ padding: '2rem 1.5rem' }}>
+        <section style={{ padding: '2rem 1.5rem', borderBottom: '1px solid var(--border)' }}>
           <div className="max-w-5xl mx-auto">
             <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 8 }}>
               {locale === 'fr' ? 'NOTRE MAISON SŒUR' : 'OUR SISTER HOUSE'}
@@ -353,6 +368,8 @@ export default function ContactPage({ houseId }: ContactPageProps) {
             </Link>
           </div>
         </section>
+
+        <InquiryForm houseId={houseId} />
       </main>
       <Footer />
     </>

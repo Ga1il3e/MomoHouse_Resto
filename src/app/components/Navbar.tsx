@@ -32,6 +32,10 @@ export default function Navbar({ variant = 'portal', houseId }: NavbarProps) {
     { label: t.nav.theWorld, href: isHome ? '#culture' : '/#culture' },
     { label: t.nav.theFood, href: isHome ? '#momo' : '/#momo' },
     { label: t.nav.ourHouses, href: isHome ? '#houses' : '/#houses' },
+    {
+      label: language === 'fr' ? 'Réserver' : 'Reserve',
+      href: isHome ? '#reserve' : '/#reserve',
+    },
   ];
 
   const houseLinks = houseId
@@ -43,6 +47,10 @@ export default function Navbar({ variant = 'portal', houseId }: NavbarProps) {
         {
           label: language === 'fr' ? 'Commandes' : 'Order',
           href: `/${houseId}/carte`,
+        },
+        {
+          label: language === 'fr' ? 'Réserver' : 'Reserve',
+          href: `/${houseId}#reserve`,
         },
         {
           label: language === 'fr' ? 'À propos' : 'About',

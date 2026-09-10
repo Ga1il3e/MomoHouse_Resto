@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/app/components/Navbar';
+import InquiryForm from '@/app/components/InquiryForm';
 import Footer from '@/components/Footer';
 import { useLanguage } from '@/context/LanguageContext';
 import { getLocation } from '@/data/locations';
@@ -151,8 +152,8 @@ export default function HouseHome({ houseId }: HouseHomeProps) {
               >
                 {locale === 'fr' ? 'COMMANDES →' : 'ORDER →'}
               </Link>
-              <Link
-                href={`/${houseId}/contact`}
+              <a
+                href="#reserve"
                 className="text-annotation inline-flex min-h-11 items-center justify-center px-7 py-3.5"
                 style={{
                   border: '1px solid rgba(245,240,232,0.35)',
@@ -162,8 +163,8 @@ export default function HouseHome({ houseId }: HouseHomeProps) {
                   fontSize: '0.65rem',
                 }}
               >
-                {locale === 'fr' ? 'NOUS TROUVER →' : 'FIND US →'}
-              </Link>
+                {locale === 'fr' ? 'RÉSERVER →' : 'RESERVE →'}
+              </a>
               <Link
                 href={`/${houseId}/a-propos`}
                 className="text-annotation underline-expand sm:ml-2"
@@ -531,6 +532,8 @@ export default function HouseHome({ houseId }: HouseHomeProps) {
             </div>
           </div>
         </section>
+
+        <InquiryForm houseId={houseId} />
 
         {/* Bottom strip */}
         <section
