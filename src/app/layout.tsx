@@ -1,49 +1,47 @@
-import type { Metadata } from "next";
-import {
-  Be_Vietnam_Pro,
-  Newsreader,
-  Noto_Serif_Devanagari,
-} from "next/font/google";
-import "./globals.css";
+import React from 'react';
+import type { Metadata, Viewport } from 'next';
+import { Plus_Jakarta_Sans } from 'next/font/google';
+import '../styles/tailwind.css';
+import { LanguageProvider } from '@/context/LanguageContext';
 
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  weight: ["400", "600", "700"],
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-plus-jakarta-sans',
+  display: 'swap',
 });
 
-const beVietnam = Be_Vietnam_Pro({
-  variable: "--font-be-vietnam",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const notoDevanagari = Noto_Serif_Devanagari({
-  variable: "--font-noto-devanagari",
-  subsets: ["devanagari"],
-  weight: ["400", "600", "700"],
-});
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
-  title: "Momo House — Street Food du Népal & du Tibet",
-  description:
-    "Experience the authentic taste of the Himalayas. Hand-rolled dough, aromatic spices, and traditional steaming methods in Paris.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  title: 'Momo House — Nepalese & Tibetan Restaurant in Paris',
+  description: 'Momo House brings handmade Nepalese and Tibetan dumplings to the heart of Paris. Two locations: Montmartre and Poissonnière. Steamed, fried, soup, and spicy momos made fresh every day.',
+  openGraph: {
+    title: 'Momo House — Two Houses, One World',
+    description: 'Handmade Nepalese & Tibetan dumplings in Paris. Choose your house: Montmartre or Poissonnière.',
+    type: 'website',
+    locale: 'en_FR',
+    images: [{ url: '/assets/images/app_logo.png', width: 1200, height: 630 }],
+  },
+  icons: {
+    icon: [{ url: '/favicon.ico', type: 'image/x-icon' }],
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="fr"
-      className={`${newsreader.variable} ${beVietnam.variable} ${notoDevanagari.variable} h-full antialiased`}
-    >
-      <body className="flex min-h-full flex-col bg-cream text-ink">
-        {children}
-      </body>
+    <html lang="en" className={plusJakartaSans.variable}>
+      <body className={plusJakartaSans.className}>
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
+</body>
     </html>
   );
 }
