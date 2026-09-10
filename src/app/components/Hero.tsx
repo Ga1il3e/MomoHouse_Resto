@@ -115,29 +115,29 @@ export default function Hero() {
         aria-hidden="true"
       >
         <div className="absolute momo-float" style={{ top: '12%', left: '6%', transform: `translate(${parallax.x * -1.4}px, ${parallax.y * -1.2}px)` }}>
-          <MomoSVG size={72} opacity={0.35} />
+          <MomoSVG size={90} opacity={0.35} />
         </div>
         <div className="absolute momo-float-delayed" style={{ top: '8%', right: '8%', transform: `translate(${parallax.x * 1.8}px, ${parallax.y * 1.0}px)` }}>
-          <MomoSVG size={104} opacity={0.2} />
+          <MomoSVG size={130} opacity={0.2} />
         </div>
         <div className="absolute momo-drift" style={{ bottom: '15%', left: '3%', transform: `translate(${parallax.x * -2.0}px, ${parallax.y * -0.8}px)` }}>
-          <MomoSVG size={128} opacity={0.15} />
+          <MomoSVG size={160} opacity={0.15} />
         </div>
         <div className="absolute momo-float" style={{ bottom: '20%', right: '5%', transform: `translate(${parallax.x * 1.5}px, ${parallax.y * 1.6}px)` }}>
-          <MomoSVG size={80} opacity={0.25} />
+          <MomoSVG size={100} opacity={0.25} />
         </div>
         <div className="absolute momo-float-delayed hidden md:block" style={{ top: '45%', right: '15%', transform: `translate(${parallax.x * 1.2}px, ${parallax.y * -1.4}px)` }}>
-          <MomoSVG size={48} opacity={0.3} />
+          <MomoSVG size={60} opacity={0.3} />
         </div>
 
         {/* Storefront sign — editorial float */}
         <div
           className="absolute hidden lg:block"
           style={{
-            top: '20%',
-            right: '5%',
-            width: '256px',
-            height: '320px',
+            top: '18%',
+            right: '4%',
+            width: '320px',
+            height: '400px',
             transform: `translate(${parallax.x * 1.6}px, ${parallax.y * 1.2}px)`,
           }}
         >
@@ -148,7 +148,7 @@ export default function Hero() {
               fill
               className="object-cover object-center"
               style={{ opacity: 0.95 }}
-              sizes="256px"
+              sizes="320px"
               priority
             />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 55%, var(--background) 100%)', opacity: 0.55 }} />
