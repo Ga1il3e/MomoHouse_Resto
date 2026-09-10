@@ -2,7 +2,7 @@
 
 import React, { useEffect, useId, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { getLocation, type Location } from '@/data/locations';
+import { getLocation, locations, type Location } from '@/data/locations';
 
 type HouseId = Location['id'];
 
@@ -32,12 +32,11 @@ const initialData: FormData = {
   message: '',
 };
 
-function houseLabel(id: string, isFr: boolean): string {
+const GUEST_OPTIONS = ['1', '2', '3', '4', '5', '6', '7', '8', '9+'] as const;
+
+function houseLabel(id: string): string {
   if (id === 'montmartre') return 'Montmartre';
   if (id === 'poissonniere') return 'Poissonnière';
-  if (id === 'no-preference') {
-    return isFr ? 'sans préférence de maison' : 'with no house preference';
-  }
   return id;
 }
 
@@ -71,26 +70,25 @@ function validateForm(
   return errors;
 }
 
-const inputBase: React.CSSProperties = {
+const fieldShell = (hasError: boolean): React.CSSProperties => ({
   width: '100%',
-  backgroundColor: 'transparent',
-  border: 'none',
-  borderBottom: '1px solid rgba(245,240,232,0.15)',
+  backgroundColor: 'rgba(245,240,232,0.03)',
+  border: `1px solid ${hasError ? '#e05a3a' : 'rgba(245,240,232,0.14)'}`,
   color: 'var(--primary-foreground)',
-  fontSize: '0.85rem',
-  letterSpacing: '0.04em',
-  padding: '12px 0',
+  fontSize: '0.9rem',
+  letterSpacing: '0.03em',
+  padding: '14px 16px',
   outline: 'none',
   fontFamily: 'inherit',
-  transition: 'border-color 0.3s ease',
-};
+  transition: 'border-color 0.25s ease, background-color 0.25s ease',
+});
 
-const labelBase: React.CSSProperties = {
+const labelStyle: React.CSSProperties = {
   display: 'block',
-  fontSize: '0.5rem',
-  letterSpacing: '0.25em',
+  fontSize: '0.55rem',
+  letterSpacing: '0.22em',
   color: 'var(--primary)',
-  marginBottom: '6px',
+  marginBottom: '10px',
   fontFamily: 'inherit',
 };
 
@@ -106,22 +104,22 @@ interface FieldProps {
 function Field({ id, label, labelFr, error, isFr, children }: FieldProps) {
   return (
     <div>
-      <label htmlFor={id} style={labelBase}>
+      <label htmlFor={id} style={labelStyle}>
         {isFr ? labelFr : label}
-        {error && (
-          <span
-            style={{
-              color: '#e05a3a',
-              marginLeft: '8px',
-              fontStyle: 'italic',
-              letterSpacing: '0.1em',
-            }}
-          >
-            — {error}
-          </span>
-        )}
       </label>
       {children}
+      {error ? (
+        <p
+          style={{
+            marginTop: 8,
+            fontSize: '0.68rem',
+            color: '#e05a3a',
+            letterSpacing: '0.04em',
+          }}
+        >
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -137,6 +135,7 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
   const uid = useId();
   const locationLocked = Boolean(houseId);
   const lockedLocation = houseId ? getLocation(houseId) : null;
+  const today = new Date().toISOString().slice(0, 10);
 
   const [formData, setFormData] = useState<FormData>(() => ({
     ...initialData,
@@ -157,13 +156,16 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
   const handleChange = (field: keyof FormData, value: string) => {
     if (locationLocked && field === 'location') return;
     setFormData((prev) => ({ ...prev, [field]: value }));
-    if (touched[field]) {
+    if (touched[field] || field === 'location' || field === 'guests') {
       const next = { ...formData, [field]: value };
       const newErrors = validateForm(next, isFr, locationLocked);
       setErrors((prev) => ({
         ...prev,
         [field]: newErrors[field as keyof FormErrors],
       }));
+      if (field === 'location' || field === 'guests') {
+        setTouched((prev) => ({ ...prev, [field]: true }));
+      }
     }
   };
 
@@ -205,39 +207,36 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
     setSubmitted(false);
   };
 
-  const focusStyle = (field: keyof FormErrors): React.CSSProperties => ({
-    ...inputBase,
-    borderBottomColor: errors[field] ? '#e05a3a' : 'rgba(245,240,232,0.15)',
-  });
-
-  const successHouse =
-    formData.location === 'no-preference'
-      ? isFr
-        ? 'l’une de nos maisons'
-        : 'one of our houses'
-      : `Momo House ${houseLabel(formData.location, isFr)}`;
+  const successHouse = `Momo House ${houseLabel(formData.location)}`;
 
   if (submitted) {
     return (
       <section
         id="reserve"
-        className="relative overflow-hidden py-24 md:py-36"
+        className="relative overflow-hidden py-24 md:py-32"
         style={{ backgroundColor: 'var(--charcoal)' }}
         aria-label={isFr ? 'Formulaire de contact' : 'Inquiry form'}
       >
         <div className="mx-auto max-w-[1600px] px-6 md:px-10">
-          <div className="mx-auto max-w-2xl text-center">
+          <div
+            className="mx-auto max-w-xl px-8 py-14 text-center md:px-12"
+            style={{
+              border: '1px solid rgba(245,240,232,0.12)',
+              background:
+                'linear-gradient(160deg, rgba(245,240,232,0.04) 0%, transparent 55%)',
+            }}
+          >
             <div
-              className="mx-auto mb-10 flex items-center justify-center"
+              className="mx-auto mb-8 flex items-center justify-center"
               style={{
-                width: '64px',
-                height: '64px',
+                width: '56px',
+                height: '56px',
                 border: '1px solid var(--primary)',
               }}
             >
               <svg
-                width="24"
-                height="24"
+                width="22"
+                height="22"
                 viewBox="0 0 24 24"
                 fill="none"
                 aria-hidden="true"
@@ -251,7 +250,6 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
                 />
               </svg>
             </div>
-
             <span
               className="text-annotation mb-4 block"
               style={{
@@ -262,13 +260,12 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
             >
               {isFr ? 'MESSAGE REÇU' : 'MESSAGE RECEIVED'}
             </span>
-
             <h2
-              className="font-display mb-6 uppercase"
+              className="font-display mb-5 uppercase"
               style={{
-                fontSize: 'clamp(2rem, 5vw, 4.5rem)',
+                fontSize: 'clamp(2rem, 5vw, 3.75rem)',
                 color: 'var(--primary-foreground)',
-                lineHeight: 0.88,
+                lineHeight: 0.9,
                 letterSpacing: '-0.04em',
               }}
             >
@@ -278,42 +275,37 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
                 {isFr ? 'À TABLE.' : 'AT THE TABLE.'}
               </span>
             </h2>
-
             <p
               style={{
-                fontSize: '0.82rem',
+                fontSize: '0.85rem',
                 lineHeight: 1.7,
                 color: 'rgba(245,240,232,0.55)',
-                letterSpacing: '0.02em',
-                marginBottom: '8px',
+                marginBottom: 8,
               }}
             >
               {isFr
-                ? `Merci, ${formData.name}. Nous avons bien reçu votre demande pour ${formData.guests} convive${parseInt(formData.guests, 10) > 1 || formData.guests === '9+' ? 's' : ''} à ${successHouse}.`
-                : `Thank you, ${formData.name}. We've received your inquiry for ${formData.guests} guest${parseInt(formData.guests, 10) > 1 || formData.guests === '9+' ? 's' : ''} at ${successHouse}.`}
+                ? `Merci, ${formData.name}. Demande pour ${formData.guests} convive${parseInt(formData.guests, 10) > 1 || formData.guests === '9+' ? 's' : ''} à ${successHouse}.`
+                : `Thank you, ${formData.name}. Inquiry for ${formData.guests} guest${parseInt(formData.guests, 10) > 1 || formData.guests === '9+' ? 's' : ''} at ${successHouse}.`}
             </p>
             <p
               style={{
                 fontSize: '0.72rem',
-                lineHeight: 1.6,
-                color: 'rgba(245,240,232,0.3)',
-                letterSpacing: '0.02em',
+                color: 'rgba(245,240,232,0.32)',
                 fontStyle: 'italic',
               }}
             >
               {isFr
-                ? 'Notre équipe vous contactera dans les 24 heures pour confirmer votre réservation.'
-                : 'Our team will be in touch within 24 hours to confirm your reservation.'}
+                ? 'Confirmation sous 24 heures.'
+                : 'Confirmation within 24 hours.'}
             </p>
-
             <button
               type="button"
               onClick={handleReset}
-              className="text-annotation mt-10 transition-all duration-300"
+              className="text-annotation mt-10"
               style={{
-                color: 'rgba(245,240,232,0.35)',
+                color: 'rgba(245,240,232,0.4)',
                 fontSize: '0.55rem',
-                letterSpacing: '0.2em',
+                letterSpacing: '0.18em',
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
@@ -321,7 +313,7 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
                 textUnderlineOffset: '4px',
               }}
             >
-              {isFr ? 'ENVOYER UNE AUTRE DEMANDE' : 'SEND ANOTHER INQUIRY'}
+              {isFr ? 'NOUVELLE DEMANDE' : 'NEW INQUIRY'}
             </button>
           </div>
         </div>
@@ -332,8 +324,12 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
   return (
     <section
       id="reserve"
-      className="relative overflow-hidden py-24 md:py-36"
-      style={{ backgroundColor: 'var(--charcoal)' }}
+      className="relative overflow-hidden py-20 md:py-28"
+      style={{
+        backgroundColor: 'var(--charcoal)',
+        backgroundImage:
+          'radial-gradient(ellipse 70% 50% at 15% 20%, rgba(196,113,74,0.12), transparent 55%)',
+      }}
       aria-label={
         isFr
           ? 'Formulaire de demande de réservation'
@@ -347,394 +343,373 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
         <span
           className="font-display uppercase"
           style={{
-            fontSize: 'clamp(6rem, 22vw, 20rem)',
+            fontSize: 'clamp(5rem, 18vw, 16rem)',
             lineHeight: 0.85,
             color: 'var(--primary-foreground)',
-            opacity: 0.018,
+            opacity: 0.025,
             letterSpacing: '-0.06em',
             whiteSpace: 'nowrap',
             paddingRight: '2vw',
+            paddingBottom: '2vh',
           }}
         >
           RESERVE
         </span>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[1600px] px-6 md:px-10">
-        <div className="grid grid-cols-1 items-start gap-16 md:grid-cols-12 md:gap-20">
-          <div className="md:col-span-5">
-            <span
-              className="text-annotation mb-4 block"
-              style={{ color: 'var(--primary)', letterSpacing: '0.2em' }}
-            >
-              {locationLocked
-                ? lockedLocation?.fullName ?? 'MOMO HOUSE'
-                : isFr
-                  ? 'NOUS CONTACTER'
-                  : 'GET IN TOUCH'}
+      <div className="relative z-10 mx-auto max-w-[1200px] px-6 md:px-10">
+        <div className="mb-10 max-w-2xl md:mb-12">
+          <span
+            className="text-annotation mb-3 block"
+            style={{ color: 'var(--primary)', letterSpacing: '0.2em' }}
+          >
+            {locationLocked
+              ? lockedLocation?.fullName ?? 'MOMO HOUSE'
+              : isFr
+                ? 'RÉSERVATION'
+                : 'RESERVATION'}
+          </span>
+          <h2
+            className="font-display mb-4 uppercase"
+            style={{
+              fontSize: 'clamp(2.4rem, 5.5vw, 4.75rem)',
+              color: 'var(--primary-foreground)',
+              lineHeight: 0.9,
+              letterSpacing: '-0.04em',
+            }}
+          >
+            {isFr ? 'RÉSERVER' : 'PLAN YOUR'}{' '}
+            <span style={{ color: 'var(--primary)' }}>
+              {isFr ? 'VOTRE TABLE.' : 'VISIT.'}
             </span>
-            <h2
-              className="font-display mb-8 uppercase"
-              style={{
-                fontSize: 'clamp(2.8rem, 6vw, 7rem)',
-                color: 'var(--primary-foreground)',
-                lineHeight: 0.85,
-                letterSpacing: '-0.04em',
-              }}
-            >
-              {isFr ? 'RÉSERVER' : 'PLAN YOUR'}
-              <br />
-              <span style={{ color: 'var(--primary)' }}>
-                {isFr ? 'VOTRE TABLE.' : 'VISIT.'}
-              </span>
-            </h2>
+          </h2>
+          <p
+            style={{
+              fontSize: '0.9rem',
+              lineHeight: 1.65,
+              color: 'rgba(245,240,232,0.5)',
+              maxWidth: '42ch',
+            }}
+          >
+            {locationLocked
+              ? isFr
+                ? `Table à Momo House ${lockedLocation?.name}. Indiquez date et nombre de convives — nous confirmons rapidement.`
+                : `Table at Momo House ${lockedLocation?.name}. Share your date and party size — we confirm quickly.`
+              : isFr
+                ? 'Choisissez une maison, une date et le nombre de convives. Réponse sous 24h.'
+                : 'Choose a house, a date, and your party size. Reply within 24h.'}
+          </p>
+        </div>
 
-            <p
-              style={{
-                fontSize: '0.8rem',
-                lineHeight: 1.75,
-                color: 'rgba(245,240,232,0.45)',
-                letterSpacing: '0.02em',
-                maxWidth: '340px',
-              }}
-            >
-              {locationLocked
-                ? isFr
-                  ? `Réservation pour Momo House ${lockedLocation?.name}. Dites-nous quand vous souhaitez venir et combien vous serez — nous nous occupons du reste.`
-                  : `Reservation for Momo House ${lockedLocation?.name}. Tell us when you'd like to come and how many you'll be — we'll take care of the rest.`
-                : isFr
-                  ? 'Dites-nous quand vous souhaitez venir, combien vous serez, et quelle maison vous attire. Nous nous occupons du reste.'
-                  : "Tell us when you'd like to come, how many you'll be, and which house calls to you. We'll take care of the rest."}
-            </p>
-
-            {locationLocked && lockedLocation ? (
-              <div
-                className="mt-8"
-                style={{
-                  border: '1px solid rgba(245,240,232,0.12)',
-                  padding: '1rem 1.15rem',
-                }}
-              >
-                <p
-                  className="text-annotation mb-2"
-                  style={{
-                    color: 'var(--primary)',
-                    letterSpacing: '0.16em',
-                    fontSize: '0.5rem',
-                  }}
-                >
-                  {isFr ? 'MAISON' : 'HOUSE'}
-                </p>
-                <p
-                  style={{
-                    color: 'var(--primary-foreground)',
-                    fontSize: '0.95rem',
-                    letterSpacing: '0.02em',
-                  }}
-                >
-                  {lockedLocation.name}
-                </p>
-                <p
-                  style={{
-                    color: 'rgba(245,240,232,0.4)',
-                    fontSize: '0.75rem',
-                    marginTop: 4,
-                  }}
-                >
-                  {lockedLocation.address}, {lockedLocation.arrondissement}
-                </p>
-              </div>
-            ) : null}
-
-            <div
-              className="mt-10 pt-8"
-              style={{ borderTop: '1px solid rgba(245,240,232,0.08)' }}
-            >
-              <p
-                style={{
-                  fontSize: '0.62rem',
-                  lineHeight: 1.7,
-                  color: 'rgba(245,240,232,0.25)',
-                  letterSpacing: '0.08em',
-                  fontStyle: 'italic',
-                }}
-              >
-                {isFr
-                  ? 'Walk-ins bienvenus. Réservation recommandée pour le service du soir.'
-                  : 'Walk-ins welcome. Reservations recommended for dinner service.'}
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="relative"
+          style={{
+            border: '1px solid rgba(245,240,232,0.12)',
+            background:
+              'linear-gradient(165deg, rgba(245,240,232,0.045) 0%, rgba(28,28,26,0.65) 40%, rgba(28,28,26,0.9) 100%)',
+            padding: 'clamp(1.5rem, 4vw, 2.75rem)',
+          }}
+        >
+          {!locationLocked ? (
+            <div className="mb-8">
+              <p style={labelStyle}>
+                {isFr ? 'MAISON' : 'HOUSE'}
               </p>
-            </div>
-          </div>
-
-          <div className="md:col-span-7">
-            <form onSubmit={handleSubmit} noValidate>
-              <div className="mb-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
-                <Field
-                  id={`${uid}-name`}
-                  label="FULL NAME"
-                  labelFr="NOM COMPLET"
-                  error={errors.name}
-                  isFr={isFr}
-                >
-                  <input
-                    id={`${uid}-name`}
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => handleChange('name', e.target.value)}
-                    onBlur={() => handleBlur('name')}
-                    placeholder={isFr ? 'Votre nom' : 'Your name'}
-                    style={{
-                      ...focusStyle('name'),
-                      caretColor: 'var(--primary)',
-                    }}
-                    autoComplete="name"
-                  />
-                </Field>
-
-                <Field
-                  id={`${uid}-email`}
-                  label="EMAIL ADDRESS"
-                  labelFr="ADRESSE EMAIL"
-                  error={errors.email}
-                  isFr={isFr}
-                >
-                  <input
-                    id={`${uid}-email`}
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleChange('email', e.target.value)}
-                    onBlur={() => handleBlur('email')}
-                    placeholder={isFr ? 'votre@email.com' : 'your@email.com'}
-                    style={{
-                      ...focusStyle('email'),
-                      caretColor: 'var(--primary)',
-                    }}
-                    autoComplete="email"
-                  />
-                </Field>
-
-                {!locationLocked ? (
-                  <Field
-                    id={`${uid}-location`}
-                    label="LOCATION PREFERENCE"
-                    labelFr="MAISON PRÉFÉRÉE"
-                    error={errors.location}
-                    isFr={isFr}
-                  >
-                    <select
-                      id={`${uid}-location`}
-                      value={formData.location}
-                      onChange={(e) =>
-                        handleChange('location', e.target.value)
-                      }
-                      onBlur={() => handleBlur('location')}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {locations.map((loc) => {
+                  const selected = formData.location === loc.id;
+                  return (
+                    <button
+                      key={loc.id}
+                      type="button"
+                      onClick={() => handleChange('location', loc.id)}
+                      className="text-left transition-all duration-300"
                       style={{
-                        ...focusStyle('location'),
-                        appearance: 'none',
+                        minHeight: 88,
+                        padding: '1rem 1.1rem',
+                        border: selected
+                          ? '1px solid var(--primary)'
+                          : '1px solid rgba(245,240,232,0.14)',
+                        backgroundColor: selected
+                          ? 'rgba(196,113,74,0.14)'
+                          : 'rgba(245,240,232,0.03)',
                         cursor: 'pointer',
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(245,240,232,0.3)' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'right 4px center',
-                        paddingRight: '24px',
                       }}
+                      aria-pressed={selected}
                     >
-                      <option value="" style={{ backgroundColor: '#1a1a1a' }}>
-                        {isFr ? 'Choisir une maison' : 'Choose a house'}
-                      </option>
-                      <option
-                        value="montmartre"
-                        style={{ backgroundColor: '#1a1a1a' }}
+                      <span
+                        className="text-annotation mb-2 block"
+                        style={{
+                          color: selected
+                            ? 'var(--primary)'
+                            : 'rgba(245,240,232,0.4)',
+                          fontSize: '0.5rem',
+                          letterSpacing: '0.16em',
+                        }}
                       >
-                        {isFr
-                          ? 'Montmartre — 2e arrondissement'
-                          : 'Montmartre — 2nd arrondissement'}
-                      </option>
-                      <option
-                        value="poissonniere"
-                        style={{ backgroundColor: '#1a1a1a' }}
+                        MOMO HOUSE
+                      </span>
+                      <span
+                        className="font-display block"
+                        style={{
+                          color: 'var(--primary-foreground)',
+                          fontSize: '1.15rem',
+                          letterSpacing: '-0.02em',
+                        }}
                       >
-                        {isFr
-                          ? 'Poissonnière — Paris 9e'
-                          : 'Poissonnière — Paris 9th'}
-                      </option>
-                      <option
-                        value="no-preference"
-                        style={{ backgroundColor: '#1a1a1a' }}
-                      >
-                        {isFr ? 'Sans préférence' : 'No preference'}
-                      </option>
-                    </select>
-                  </Field>
-                ) : (
-                  <div>
-                    <p style={labelBase}>
-                      {isFr ? 'MAISON' : 'HOUSE'}
-                    </p>
-                    <p
-                      style={{
-                        ...inputBase,
-                        borderBottomColor: 'rgba(245,240,232,0.25)',
-                        color: 'var(--primary-foreground)',
-                        cursor: 'default',
-                      }}
-                      aria-live="polite"
-                    >
-                      {lockedLocation?.name}
+                        {loc.name}
+                      </span>
                       <span
                         style={{
                           display: 'block',
+                          marginTop: 6,
                           fontSize: '0.7rem',
                           color: 'rgba(245,240,232,0.4)',
-                          marginTop: 4,
-                          letterSpacing: '0.02em',
                         }}
                       >
-                        {isFr
-                          ? 'Fixée pour cette maison — non modifiable'
-                          : 'Fixed for this house — not changeable'}
+                        {loc.address}
                       </span>
-                    </p>
-                    <input type="hidden" name="location" value={houseId} />
-                  </div>
-                )}
-
-                <Field
-                  id={`${uid}-date`}
-                  label="DINING DATE"
-                  labelFr="DATE DU REPAS"
-                  error={errors.date}
-                  isFr={isFr}
-                >
-                  <input
-                    id={`${uid}-date`}
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => handleChange('date', e.target.value)}
-                    onBlur={() => handleBlur('date')}
-                    style={{
-                      ...focusStyle('date'),
-                      colorScheme: 'dark',
-                      caretColor: 'var(--primary)',
-                    }}
-                  />
-                </Field>
-
-                <Field
-                  id={`${uid}-guests`}
-                  label="NUMBER OF GUESTS"
-                  labelFr="NOMBRE DE CONVIVES"
-                  error={errors.guests}
-                  isFr={isFr}
-                >
-                  <select
-                    id={`${uid}-guests`}
-                    value={formData.guests}
-                    onChange={(e) => handleChange('guests', e.target.value)}
-                    onBlur={() => handleBlur('guests')}
-                    style={{
-                      ...focusStyle('guests'),
-                      appearance: 'none',
-                      cursor: 'pointer',
-                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(245,240,232,0.3)' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`,
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'right 4px center',
-                      paddingRight: '24px',
-                    }}
-                  >
-                    <option value="" style={{ backgroundColor: '#1a1a1a' }}>
-                      {isFr ? 'Nombre de convives' : 'Number of guests'}
-                    </option>
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-                      <option
-                        key={n}
-                        value={String(n)}
-                        style={{ backgroundColor: '#1a1a1a' }}
-                      >
-                        {n}{' '}
-                        {isFr
-                          ? n === 1
-                            ? 'convive'
-                            : 'convives'
-                          : n === 1
-                            ? 'guest'
-                            : 'guests'}
-                      </option>
-                    ))}
-                    <option value="9+" style={{ backgroundColor: '#1a1a1a' }}>
-                      {isFr ? '9+ convives (groupe)' : '9+ guests (group)'}
-                    </option>
-                  </select>
-                </Field>
-
-                <div className="sm:col-span-2">
-                  <label htmlFor={`${uid}-message`} style={labelBase}>
-                    {isFr ? 'MESSAGE (OPTIONNEL)' : 'MESSAGE (OPTIONAL)'}
-                  </label>
-                  <textarea
-                    id={`${uid}-message`}
-                    value={formData.message}
-                    onChange={(e) => handleChange('message', e.target.value)}
-                    placeholder={
-                      isFr
-                        ? 'Allergies, occasions spéciales, demandes particulières…'
-                        : 'Allergies, special occasions, particular requests…'
-                    }
-                    rows={3}
-                    style={{
-                      ...inputBase,
-                      resize: 'none',
-                      caretColor: 'var(--primary)',
-                    }}
-                  />
-                </div>
+                    </button>
+                  );
+                })}
               </div>
-
-              <div
-                className="flex flex-col items-start gap-6 pt-4 sm:flex-row sm:items-center"
-                style={{ borderTop: '1px solid rgba(245,240,232,0.08)' }}
-              >
-                <button
-                  type="submit"
-                  className="group inline-flex items-center gap-4 transition-all duration-300"
-                  style={{
-                    backgroundColor: 'var(--primary)',
-                    color: 'var(--primary-foreground)',
-                    padding: '14px 32px',
-                    border: '1px solid var(--primary)',
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    fontSize: '0.65rem',
-                    letterSpacing: '0.2em',
-                  }}
-                >
-                  <span>
-                    {isFr ? 'ENVOYER LA DEMANDE' : 'SEND INQUIRY'}
-                  </span>
-                  <span
-                    className="transition-transform duration-300 group-hover:translate-x-1"
-                    aria-hidden="true"
-                  >
-                    →
-                  </span>
-                </button>
-
+              {errors.location ? (
                 <p
                   style={{
-                    fontSize: '0.55rem',
-                    color: 'rgba(245,240,232,0.25)',
-                    letterSpacing: '0.08em',
-                    lineHeight: 1.6,
-                    fontStyle: 'italic',
+                    marginTop: 10,
+                    fontSize: '0.68rem',
+                    color: '#e05a3a',
                   }}
                 >
-                  {isFr
-                    ? 'Réponse sous 24h · Aucune carte bancaire requise'
-                    : 'Response within 24h · No card required'}
+                  {errors.location}
+                </p>
+              ) : null}
+            </div>
+          ) : (
+            <div
+              className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+              style={{
+                border: '1px solid rgba(245,240,232,0.14)',
+                padding: '1rem 1.15rem',
+                backgroundColor: 'rgba(196,113,74,0.1)',
+              }}
+            >
+              <div>
+                <p
+                  className="text-annotation mb-1"
+                  style={{
+                    color: 'var(--primary)',
+                    fontSize: '0.5rem',
+                    letterSpacing: '0.16em',
+                  }}
+                >
+                  {isFr ? 'MAISON FIXÉE' : 'HOUSE LOCKED'}
+                </p>
+                <p
+                  className="font-display"
+                  style={{
+                    color: 'var(--primary-foreground)',
+                    fontSize: '1.2rem',
+                  }}
+                >
+                  {lockedLocation?.name}
+                </p>
+                <p
+                  style={{
+                    color: 'rgba(245,240,232,0.45)',
+                    fontSize: '0.75rem',
+                    marginTop: 2,
+                  }}
+                >
+                  {lockedLocation?.address}, {lockedLocation?.arrondissement}
                 </p>
               </div>
-            </form>
+              <input type="hidden" name="location" value={houseId} />
+            </div>
+          )}
+
+          <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <Field
+              id={`${uid}-name`}
+              label="FULL NAME"
+              labelFr="NOM COMPLET"
+              error={errors.name}
+              isFr={isFr}
+            >
+              <input
+                id={`${uid}-name`}
+                type="text"
+                value={formData.name}
+                onChange={(e) => handleChange('name', e.target.value)}
+                onBlur={() => handleBlur('name')}
+                placeholder={isFr ? 'Votre nom' : 'Your name'}
+                style={{
+                  ...fieldShell(Boolean(errors.name)),
+                  caretColor: 'var(--primary)',
+                }}
+                autoComplete="name"
+              />
+            </Field>
+
+            <Field
+              id={`${uid}-email`}
+              label="EMAIL ADDRESS"
+              labelFr="ADRESSE EMAIL"
+              error={errors.email}
+              isFr={isFr}
+            >
+              <input
+                id={`${uid}-email`}
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleChange('email', e.target.value)}
+                onBlur={() => handleBlur('email')}
+                placeholder={isFr ? 'votre@email.com' : 'your@email.com'}
+                style={{
+                  ...fieldShell(Boolean(errors.email)),
+                  caretColor: 'var(--primary)',
+                }}
+                autoComplete="email"
+              />
+            </Field>
+
+            <Field
+              id={`${uid}-date`}
+              label="DINING DATE"
+              labelFr="DATE DU REPAS"
+              error={errors.date}
+              isFr={isFr}
+            >
+              <input
+                id={`${uid}-date`}
+                type="date"
+                min={today}
+                value={formData.date}
+                onChange={(e) => handleChange('date', e.target.value)}
+                onBlur={() => handleBlur('date')}
+                style={{
+                  ...fieldShell(Boolean(errors.date)),
+                  colorScheme: 'dark',
+                  caretColor: 'var(--primary)',
+                }}
+              />
+            </Field>
+
+            <div>
+              <p style={labelStyle}>
+                {isFr ? 'NOMBRE DE CONVIVES' : 'NUMBER OF GUESTS'}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {GUEST_OPTIONS.map((n) => {
+                  const selected = formData.guests === n;
+                  return (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => handleChange('guests', n)}
+                      className="text-annotation transition-all duration-200"
+                      style={{
+                        minWidth: 44,
+                        minHeight: 44,
+                        padding: '0 12px',
+                        border: selected
+                          ? '1px solid var(--primary)'
+                          : '1px solid rgba(245,240,232,0.14)',
+                        backgroundColor: selected
+                          ? 'var(--primary)'
+                          : 'rgba(245,240,232,0.03)',
+                        color: selected
+                          ? 'var(--primary-foreground)'
+                          : 'rgba(245,240,232,0.7)',
+                        letterSpacing: '0.08em',
+                        fontSize: '0.7rem',
+                        cursor: 'pointer',
+                      }}
+                      aria-pressed={selected}
+                    >
+                      {n}
+                    </button>
+                  );
+                })}
+              </div>
+              {errors.guests ? (
+                <p
+                  style={{
+                    marginTop: 8,
+                    fontSize: '0.68rem',
+                    color: '#e05a3a',
+                  }}
+                >
+                  {errors.guests}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="sm:col-span-2">
+              <label htmlFor={`${uid}-message`} style={labelStyle}>
+                {isFr ? 'MESSAGE (OPTIONNEL)' : 'MESSAGE (OPTIONAL)'}
+              </label>
+              <textarea
+                id={`${uid}-message`}
+                value={formData.message}
+                onChange={(e) => handleChange('message', e.target.value)}
+                placeholder={
+                  isFr
+                    ? 'Allergies, occasions spéciales, demandes particulières…'
+                    : 'Allergies, special occasions, particular requests…'
+                }
+                rows={3}
+                style={{
+                  ...fieldShell(false),
+                  resize: 'vertical',
+                  minHeight: 96,
+                  caretColor: 'var(--primary)',
+                }}
+              />
+            </div>
           </div>
-        </div>
+
+          <div
+            className="flex flex-col gap-4 pt-6 sm:flex-row sm:items-center sm:justify-between"
+            style={{ borderTop: '1px solid rgba(245,240,232,0.1)' }}
+          >
+            <button
+              type="submit"
+              className="group inline-flex min-h-12 w-full items-center justify-center gap-3 px-8 py-3.5 transition-opacity duration-300 hover:opacity-90 sm:w-auto"
+              style={{
+                backgroundColor: 'var(--primary)',
+                color: 'var(--primary-foreground)',
+                border: '1px solid var(--primary)',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                fontSize: '0.7rem',
+                letterSpacing: '0.18em',
+              }}
+            >
+              <span>{isFr ? 'ENVOYER LA DEMANDE' : 'SEND INQUIRY'}</span>
+              <span
+                className="transition-transform duration-300 group-hover:translate-x-1"
+                aria-hidden="true"
+              >
+                →
+              </span>
+            </button>
+            <p
+              style={{
+                fontSize: '0.65rem',
+                color: 'rgba(245,240,232,0.35)',
+                letterSpacing: '0.06em',
+                lineHeight: 1.5,
+              }}
+            >
+              {isFr
+                ? 'Réponse sous 24h · Walk-ins bienvenus · Aucune carte requise'
+                : 'Reply within 24h · Walk-ins welcome · No card required'}
+            </p>
+          </div>
+        </form>
       </div>
     </section>
   );

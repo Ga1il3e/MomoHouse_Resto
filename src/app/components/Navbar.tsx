@@ -32,11 +32,14 @@ export default function Navbar({ variant = 'portal', houseId }: NavbarProps) {
     { label: t.nav.theWorld, href: isHome ? '#culture' : '/#culture' },
     { label: t.nav.theFood, href: isHome ? '#momo' : '/#momo' },
     { label: t.nav.ourHouses, href: isHome ? '#houses' : '/#houses' },
-    {
-      label: language === 'fr' ? 'Réserver' : 'Reserve',
-      href: isHome ? '#reserve' : '/#reserve',
-    },
   ];
+
+  const reserveHref = isHouse
+    ? `/${houseId}#reserve`
+    : isHome
+      ? '#reserve'
+      : '/#reserve';
+  const reserveLabel = language === 'fr' ? 'Réserver' : 'Reserve';
 
   const houseLinks = houseId
     ? [
@@ -47,10 +50,6 @@ export default function Navbar({ variant = 'portal', houseId }: NavbarProps) {
         {
           label: language === 'fr' ? 'Commandes' : 'Order',
           href: `/${houseId}/carte`,
-        },
-        {
-          label: language === 'fr' ? 'Réserver' : 'Reserve',
-          href: `/${houseId}#reserve`,
         },
         {
           label: language === 'fr' ? 'À propos' : 'About',
@@ -95,16 +94,12 @@ export default function Navbar({ variant = 'portal', houseId }: NavbarProps) {
     }
   };
 
-  const ctaHref = isHouse
-    ? `/${houseId}/carte`
-    : isHome
-      ? '#houses'
-      : '/#houses';
+  const ctaHref = isHouse ? `/${houseId}/carte` : reserveHref;
   const ctaLabel = isHouse
     ? language === 'fr'
       ? 'Commandes'
       : 'Order'
-    : t.nav.chooseYourHouse;
+    : reserveLabel;
 
   return (
     <>
@@ -144,7 +139,7 @@ export default function Navbar({ variant = 'portal', houseId }: NavbarProps) {
             </div>
           </Link>
 
-          <div className="hidden items-center gap-7 md:flex">
+          <div className="hidden items-center gap-6 md:flex lg:gap-7">
             {navLinks.map((link) =>
               link.href.startsWith('#') ? (
                 <button
@@ -177,6 +172,37 @@ export default function Navbar({ variant = 'portal', houseId }: NavbarProps) {
                   {link.label}
                 </Link>
               ),
+            )}
+
+            {/* Explicit Reserve control beside nav links */}
+            {reserveHref.startsWith('#') ? (
+              <button
+                type="button"
+                onClick={() => handlePortalHash(reserveHref)}
+                className="text-annotation inline-flex min-h-9 items-center px-4 py-2 transition-colors duration-300"
+                style={{
+                  border: '1px solid var(--primary)',
+                  color: 'var(--primary)',
+                  letterSpacing: '0.14em',
+                  backgroundColor: 'transparent',
+                  cursor: 'pointer',
+                }}
+              >
+                {reserveLabel}
+              </button>
+            ) : (
+              <Link
+                href={reserveHref}
+                className="text-annotation inline-flex min-h-9 items-center px-4 py-2 transition-colors duration-300"
+                style={{
+                  border: '1px solid var(--primary)',
+                  color: 'var(--primary)',
+                  letterSpacing: '0.14em',
+                  textDecoration: 'none',
+                }}
+              >
+                {reserveLabel}
+              </Link>
             )}
           </div>
 
@@ -348,13 +374,44 @@ export default function Navbar({ variant = 'portal', houseId }: NavbarProps) {
           ),
         )}
 
-        {!ctaHref.startsWith('#') ? (
+        {reserveHref.startsWith('#') ? (
+          <button
+            type="button"
+            onClick={() => handlePortalHash(reserveHref)}
+            className="text-annotation mt-2 px-8 py-3"
+            style={{
+              backgroundColor: 'var(--primary)',
+              color: 'var(--primary-foreground)',
+              letterSpacing: '0.12em',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            {reserveLabel}
+          </button>
+        ) : (
           <Link
-            href={ctaHref}
+            href={reserveHref}
             onClick={() => setMenuOpen(false)}
             className="text-annotation mt-2 px-8 py-3"
             style={{
               backgroundColor: 'var(--primary)',
+              color: 'var(--primary-foreground)',
+              letterSpacing: '0.12em',
+              textDecoration: 'none',
+            }}
+          >
+            {reserveLabel}
+          </Link>
+        )}
+
+        {isHouse ? (
+          <Link
+            href={ctaHref}
+            onClick={() => setMenuOpen(false)}
+            className="text-annotation mt-1 px-8 py-3"
+            style={{
+              border: '1px solid rgba(245,240,232,0.28)',
               color: 'var(--primary-foreground)',
               letterSpacing: '0.12em',
               textDecoration: 'none',
