@@ -93,7 +93,7 @@ export default function AboutPage({ houseId }: AboutPageProps) {
 
   return (
     <>
-      <Navbar />
+      <Navbar variant="house" houseId={houseId} />
       <main style={{ backgroundColor: 'var(--background)', minHeight: '100vh', paddingTop: '5rem' }}>
         {/* Breadcrumb */}
         <div style={{ borderBottom: '1px solid var(--border)', padding: '1rem 1.5rem' }}>

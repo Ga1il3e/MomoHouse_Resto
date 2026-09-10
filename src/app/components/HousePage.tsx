@@ -356,7 +356,7 @@ const houseAbout = {
     },
     {
       title: { en: 'The Terrace', fr: 'La Terrasse' },
-      body: { en: 'Rue Poissonnière runs through the 10th — a lively street with a terrace that catches the afternoon light. In summer, the whole neighbourhood seems to pass by.', fr: 'La rue Poissonnière traverse le 10e — une rue animée avec une terrasse qui capte la lumière de l\'après-midi. En été, tout le quartier semble passer.' },
+      body: { en: 'Rue Poissonnière is a lively street with a terrace that catches the afternoon light. In summer, the whole neighbourhood seems to pass by.', fr: 'La rue Poissonnière est une rue animée avec une terrasse qui capte la lumière de l\'après-midi. En été, tout le quartier semble passer.' },
       image: 'https://images.unsplash.com/photo-1599781092575-edba9025bec8',
       imageAlt: 'The lively terrace of Momo House Poissonnière on a sunny afternoon with guests dining outside'
     }],
@@ -364,7 +364,7 @@ const houseAbout = {
     storefront: {
       image: '/assets/images/image-1789039959334.png',
       alt: 'Momo House Poissonnière storefront with terrace seating, red signage, and guests dining outside',
-      caption: { en: '46 Rue Poissonnière, Paris 10e', fr: '46 Rue Poissonnière, Paris 10e' }
+      caption: { en: '46 Rue Poissonnière, Paris 9e', fr: '46 Rue Poissonnière, Paris 9e' }
     }
   }
 };
@@ -553,7 +553,7 @@ export default function HousePage({ locationId }: HousePageProps) {
 
           <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <ReservationCTA
-              url={locationData.url}
+              url={locationData.href}
               label={hp.reserveButton}
               fallbackLabel={hp.reserveFallback}
               fallbackSub={hp.reserveFallbackSub}
@@ -984,7 +984,7 @@ export default function HousePage({ locationId }: HousePageProps) {
               <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
             </Link>
             <a
-              href={locationData.url}
+              href={locationData.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-annotation group"
@@ -1380,7 +1380,7 @@ export default function HousePage({ locationId }: HousePageProps) {
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
                 <ReservationCTA
-                  url={locationData.url}
+                  url={locationData.href}
                   label={hp.reserveButton}
                   fallbackLabel={hp.reserveFallback}
                   fallbackSub={hp.reserveFallbackSub}

@@ -119,14 +119,14 @@ const translations = {
       heroTagline: 'THE ORIGINAL HOUSE',
       heroSubline: 'PARISIAN SOUL. NEPALESE HEART.',
       about: 'Nestled in the 2nd arrondissement, steps from the Grands Boulevards, Momo House Montmartre is where the story began. Warm interiors, hanging lanterns, and the smell of freshly steamed dumplings.',
-      hours: 'Mon–Sat: 12:00–14:30 · 19:00–22:30\nSunday: 12:00–15:00',
+      hours: 'Opening hours — confirm by phone or on Google Maps',
     },
     // Poissonnière page specific
     poissonierePage: {
       heroTagline: 'THE URBAN HOUSE',
       heroSubline: 'STREET ENERGY. CONTEMPORARY SPIRIT.',
-      about: 'In the vibrant 10th arrondissement, Momo House Poissonnière brings the same handmade tradition to a lively, contemporary setting. The energy of the street, the warmth of the kitchen.',
-      hours: 'Mon–Sat: 11:30–15:00 · 18:30–23:00\nSunday: 12:00–15:30',
+      about: 'In the Poissonnière neighbourhood, Momo House brings the same handmade tradition to a lively, contemporary setting. The energy of the street, the warmth of the kitchen.',
+      hours: 'Opening hours — confirm by phone or on Google Maps',
     },
     // Guest reviews
     reviews: {
@@ -280,14 +280,14 @@ const translations = {
       heroTagline: 'LA MAISON ORIGINALE',
       heroSubline: 'ÂME PARISIENNE. CŒUR NÉPALAIS.',
       about: 'Nichée dans le 2e arrondissement, à deux pas des Grands Boulevards, Momo House Montmartre est là où l\'histoire a commencé. Intérieurs chaleureux, lanternes suspendues et l\'odeur des dumplings fraîchement cuits à la vapeur.',
-      hours: 'Lun–Sam : 12h00–14h30 · 19h00–22h30\nDimanche : 12h00–15h00',
+      hours: 'Horaires — confirmez par téléphone ou sur Google Maps',
     },
     // Poissonnière page specific
     poissonierePage: {
       heroTagline: 'LA MAISON URBAINE',
       heroSubline: 'ÉNERGIE DE RUE. ESPRIT CONTEMPORAIN.',
-      about: 'Dans le vibrant 10e arrondissement, Momo House Poissonnière apporte la même tradition artisanale dans un cadre vivant et contemporain. L\'énergie de la rue, la chaleur de la cuisine.',
-      hours: 'Lun–Sam : 11h30–15h00 · 18h30–23h00\nDimanche : 12h00–15h30',
+      about: 'Dans le quartier Poissonnière, Momo House apporte la même tradition artisanale dans un cadre vivant et contemporain. L\'énergie de la rue, la chaleur de la cuisine.',
+      hours: 'Horaires — confirmez par téléphone ou sur Google Maps',
     },
     // Guest reviews
     reviews: {

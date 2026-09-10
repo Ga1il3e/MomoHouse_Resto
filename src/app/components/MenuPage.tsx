@@ -429,7 +429,7 @@ export default function MenuPage({ houseId }: MenuPageProps) {
 
   return (
     <>
-      <Navbar />
+      <Navbar variant="house" houseId={houseId} />
       <div aria-live="polite" aria-atomic="true" className="sr-only">{liveMsg}</div>
 
       <main style={{ backgroundColor: 'var(--background)', minHeight: '100vh', paddingTop: '5rem' }}>

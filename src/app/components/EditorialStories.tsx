@@ -69,12 +69,12 @@ const stories: Story[] = [
 {
   tag: 'NEIGHBOURHOOD GUIDE',
   tagFr: 'GUIDE DU QUARTIER',
-  title: 'Poissonnière & the 10th',
-  titleFr: 'Poissonnière & le 10e',
-  caption: 'Canal Saint-Martin, covered passages, and a neighbourhood that never quite sleeps. Our second house lives here.',
-  captionFr: 'Canal Saint-Martin, passages couverts et un quartier qui ne dort jamais vraiment. Notre deuxième maison y vit.',
+  title: 'Around Poissonnière',
+  titleFr: 'Autour de Poissonnière',
+  caption: 'Covered passages, lively streets, and a neighbourhood that never quite sleeps. Our second house lives here.',
+  captionFr: 'Passages couverts, rues animées et un quartier qui ne dort jamais vraiment. Notre deuxième maison y vit.',
   imageUrl: "https://img.rocket.new/generatedImages/rocket_gen_img_4071cf445-1789037071382.png",
-  alt: 'Canal Saint-Martin in Paris 10th arrondissement with iron footbridges and tree-lined banks',
+  alt: 'Paris street near Rue Poissonnière with neighbourhood atmosphere',
   span: 'md:col-span-7 md:row-span-1',
   imagePosition: 'center'
 }];

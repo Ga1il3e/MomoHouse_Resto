@@ -3,24 +3,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { getTranslations } from '@/lib/i18n';
+import { locations } from '@/data/locations';
 
-const LOCATIONS = [
-  {
-    id: 'montmartre',
-    name: 'Montmartre',
-    address: '85 Rue Montmartre, 75002 Paris',
-    googleMapsUrl: 'https://maps.app.goo.gl/55qtfb5pg6BrzdRx8',
-    // Embed centered between both locations, pin on Montmartre
-    embedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.4!2d2.3469!3d48.8659!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e1de36f4147%3A0x6b9b9b9b9b9b9b9b!2s85%20Rue%20Montmartre%2C%2075002%20Paris!5e0!3m2!1sen!2sfr!4v1',
-  },
-  {
-    id: 'poissonniere',
-    name: 'Poissonnière',
-    address: '46 Rue Poissonnière, 75010 Paris',
-    googleMapsUrl: 'https://maps.app.goo.gl/PBDSGSAcVWJjssXDA',
-    embedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2623.8!2d2.3497!3d48.8698!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e1de36f4147%3A0x7c9b9b9b9b9b9b9b!2s46%20Rue%20Poissonnière%2C%2075010%20Paris!5e0!3m2!1sen!2sfr!4v1',
-  },
-];
+const LOCATIONS = locations.map((loc) => ({
+  id: loc.id,
+  name: loc.name,
+  address: `${loc.address}, ${loc.arrondissement}`,
+  googleMapsUrl: loc.mapsUrl,
+  // Query-based embeds avoid hard-coding unverified postcodes
+  embedUrl: `https://www.google.com/maps?q=${encodeURIComponent(
+    `${loc.address}, ${loc.arrondissement}`,
+  )}&output=embed`,
+}));
 
 // Single embed showing both locations
 const COMBINED_EMBED_URL =

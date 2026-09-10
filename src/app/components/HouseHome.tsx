@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { useLanguage } from '@/context/LanguageContext';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/components/Footer';
-import { locations } from '@/data/locations';
-import { getMenuByHouse, formatPrice } from '@/data/menu';
+import { useLanguage } from '@/context/LanguageContext';
+import { getLocation } from '@/data/locations';
+import { formatPrice, getMenuByHouse } from '@/data/menu';
 
 type HouseId = 'montmartre' | 'poissonniere';
 
@@ -17,392 +18,570 @@ interface HouseHomeProps {
 export default function HouseHome({ houseId }: HouseHomeProps) {
   const { language } = useLanguage();
   const locale = language as 'fr' | 'en';
-  const location = locations.find(l => l.id === houseId)!;
-  const houseName = houseId === 'montmartre' ? 'Montmartre' : 'Poissonnière';
-  const sisterHouseId = houseId === 'montmartre' ? 'poissonniere' : 'montmartre';
-  const sisterHouseName = houseId === 'montmartre' ? 'Poissonnière' : 'Montmartre';
+  const location = getLocation(houseId);
+  const houseName = location.name;
+  const sisterHouseId: HouseId =
+    houseId === 'montmartre' ? 'poissonniere' : 'montmartre';
+  const sister = getLocation(sisterHouseId);
 
   const dishes = getMenuByHouse(houseId);
-  const signatureDishes = dishes.filter(d => d.signature).slice(0, 2);
+  const featured = [
+    ...dishes.filter((d) => d.signature),
+    ...dishes.filter((d) => !d.signature && d.category === 'momos'),
+    ...dishes.filter((d) => d.category !== 'momos'),
+  ]
+    .filter(
+      (d, i, arr) => arr.findIndex((x) => x.id === d.id) === i,
+    )
+    .slice(0, 6);
 
   const [visible, setVisible] = useState<Record<string, boolean>>({});
   const refs = useRef<Record<string, HTMLElement | null>>({});
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) setVisible(prev => ({ ...prev, [e.target.id]: true }));
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting)
+            setVisible((prev) => ({ ...prev, [e.target.id]: true }));
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.12 },
     );
-    Object.values(refs.current).forEach(el => { if (el) observer.observe(el); });
+    Object.values(refs.current).forEach((el) => {
+      if (el) observer.observe(el);
+    });
     return () => observer.disconnect();
   }, []);
 
-  const setRef = (id: string) => (el: HTMLElement | null) => { refs.current[id] = el; };
+  const setRef = (id: string) => (el: HTMLElement | null) => {
+    refs.current[id] = el;
+  };
 
-  // Per-house CTA order: Montmartre leads with Order, Poissonnière leads with Visit
-  const primaryCta = houseId === 'montmartre'
-    ? { label: locale === 'fr' ? 'COMMANDER' : 'ORDER', href: `/${houseId}/carte` }
-    : { label: locale === 'fr' ? 'NOUS RENDRE VISITE' : 'VISIT US', href: `/${houseId}/contact` };
-  const secondaryCta = houseId === 'montmartre'
-    ? { label: locale === 'fr' ? 'NOUS RENDRE VISITE' : 'VISIT US', href: `/${houseId}/contact` }
-    : { label: locale === 'fr' ? 'COMMANDER' : 'ORDER', href: `/${houseId}/carte` };
+  const reveal = (id: string) => ({
+    opacity: visible[id] ? 1 : 0,
+    transform: visible[id] ? 'translateY(0)' : 'translateY(24px)',
+    transition:
+      'opacity 0.85s cubic-bezier(0.16,1,0.3,1), transform 0.85s cubic-bezier(0.16,1,0.3,1)',
+  });
 
   return (
     <>
-      <Navbar />
+      <Navbar variant="house" houseId={houseId} />
       <main style={{ backgroundColor: 'var(--background)', minHeight: '100vh' }}>
-
-        {/* ── 1. ARRIVAL ─────────────────────────────────────────────────── */}
+        {/* Hero with storefront */}
         <section
           id="arrival"
           ref={setRef('arrival')}
-          style={{
-            minHeight: '100svh',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
-            padding: 'clamp(1.5rem, 4vw, 3rem)',
-            borderBottom: '1px solid var(--border)',
-            paddingTop: '6rem',
-            opacity: visible['arrival'] ? 1 : 0,
-            transform: visible['arrival'] ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1)',
-          }}
+          className="relative overflow-hidden"
+          style={{ minHeight: '88svh', ...reveal('arrival') }}
         >
-          <div className="max-w-6xl mx-auto w-full">
-            {/* Portal link */}
-            <div style={{ marginBottom: 24 }}>
-              <Link
-                href="/"
-                className="text-annotation underline-expand"
-                style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)' }}
-              >
-                ← MOMO HOUSE PARIS
-              </Link>
-            </div>
-
-            {/* House name */}
-            <h1
-              className="font-display"
+          <div className="absolute inset-0">
+            <Image
+              src={location.storefrontImage}
+              alt={`${location.fullName} storefront`}
+              fill
+              priority
+              className="object-cover object-center"
+              sizes="100vw"
+            />
+            <div
+              className="absolute inset-0"
               style={{
-                fontSize: 'clamp(3.5rem, 14vw, 12rem)',
-                color: 'var(--foreground)',
-                letterSpacing: '-0.04em',
-                lineHeight: 0.85,
-                marginBottom: 24,
+                background:
+                  'linear-gradient(to top, rgba(28,28,26,0.92) 0%, rgba(28,28,26,0.45) 45%, rgba(28,28,26,0.25) 100%)',
+              }}
+            />
+          </div>
+
+          <div className="relative z-10 mx-auto flex min-h-[88svh] max-w-6xl flex-col justify-end px-6 pb-12 pt-28 md:px-10 md:pb-16">
+            <Link
+              href="/"
+              className="text-annotation mb-6 w-fit"
+              style={{
+                fontSize: '0.55rem',
+                letterSpacing: '0.2em',
+                color: 'rgba(245,240,232,0.65)',
+                textDecoration: 'none',
               }}
             >
-              {houseName.toUpperCase()}
+              ← MOMO HOUSE PARIS
+            </Link>
+
+            <p
+              className="text-annotation mb-3"
+              style={{ color: 'var(--primary)', letterSpacing: '0.22em' }}
+            >
+              MOMO HOUSE
+            </p>
+            <h1
+              className="font-display uppercase"
+              style={{
+                fontSize: 'clamp(3rem, 10vw, 7rem)',
+                color: 'var(--primary-foreground)',
+                letterSpacing: '-0.04em',
+                lineHeight: 0.88,
+                marginBottom: 20,
+              }}
+            >
+              {houseName}
             </h1>
-
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-              {/* Address + status */}
-              <div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', marginBottom: 4, fontVariantNumeric: 'tabular-nums' }}>
-                  {location.address} · {location.arrondissement}
-                </p>
-                <div className="flex items-center gap-2">
-                  <span
-                    style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--primary)', display: 'inline-block' }}
-                    aria-hidden="true"
-                  />
-                  <span className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: 'var(--muted-foreground)' }}>
-                    {/* TODO: Replace with live getStatus() once hours are confirmed */}
-                    {locale === 'fr' ? 'HORAIRES À CONFIRMER [VERIFY]' : 'HOURS TO BE CONFIRMED [VERIFY]'}
-                  </span>
-                </div>
-              </div>
-
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link
-                  href={primaryCta.href}
-                  className="text-annotation"
-                  style={{
-                    fontSize: '0.65rem',
-                    letterSpacing: '0.15em',
-                    padding: '14px 28px',
-                    backgroundColor: 'var(--primary)',
-                    color: 'var(--primary-foreground)',
-                    textDecoration: 'none',
-                    display: 'inline-block',
-                    minHeight: 44,
-                  }}
-                >
-                  {primaryCta.label} →
-                </Link>
-                <Link
-                  href={secondaryCta.href}
-                  className="text-annotation"
-                  style={{
-                    fontSize: '0.65rem',
-                    letterSpacing: '0.15em',
-                    padding: '14px 28px',
-                    border: '1px solid var(--border)',
-                    color: 'var(--foreground)',
-                    textDecoration: 'none',
-                    display: 'inline-block',
-                    minHeight: 44,
-                  }}
-                >
-                  {secondaryCta.label} →
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── 2. SIGNATURE DISHES ────────────────────────────────────────── */}
-        <section
-          id="signature"
-          ref={setRef('signature')}
-          style={{
-            padding: 'clamp(3rem, 8vw, 6rem) clamp(1.5rem, 4vw, 3rem)',
-            borderBottom: '1px solid var(--border)',
-            opacity: visible['signature'] ? 1 : 0,
-            transform: visible['signature'] ? 'translateY(0)' : 'translateY(40px)',
-            transition: 'opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s',
-          }}
-        >
-          <div className="max-w-6xl mx-auto">
-            <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.25em', color: 'var(--primary)', marginBottom: 24 }}>
-              {locale === 'fr' ? 'SIGNATURES' : 'SIGNATURES'}
+            <p
+              className="mb-8 max-w-xl"
+              style={{
+                fontSize: 'clamp(0.95rem, 2vw, 1.15rem)',
+                color: 'rgba(245,240,232,0.75)',
+                lineHeight: 1.55,
+              }}
+            >
+              {locale === 'fr' ? location.descriptionFr : location.description}
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
-              {signatureDishes.length > 0 ? signatureDishes.map((dish, i) => (
-                <div
-                  key={dish.id}
-                  style={{
-                    borderTop: '1px solid var(--border)',
-                    paddingTop: 24,
-                    transitionDelay: `${i * 0.08}s`,
-                  }}
-                >
-                  {/* Dish image placeholder */}
-                  <div
-                    style={{
-                      aspectRatio: '4/5',
-                      backgroundColor: 'var(--secondary)',
-                      border: '1px solid var(--border)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: 16,
-                      padding: '1rem',
-                    }}
-                    role="img"
-                    aria-label={`PLACEHOLDER — ${dish.name[locale]}, 45°, bowl edge in frame, 4:5`}
-                  >
-                    <p
-                      className="text-annotation"
-                      style={{ fontSize: '0.5rem', letterSpacing: '0.1em', color: 'var(--muted-foreground)', textAlign: 'center', lineHeight: 1.6 }}
-                    >
-                      PLACEHOLDER — {dish.name[locale]}, 45°, bowl edge in frame, 4:5
-                    </p>
-                  </div>
-
-                  {/* Devanagari name */}
-                  {dish.nameNe && (
-                    <p
-                      lang="ne"
-                      style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', color: 'var(--foreground)', lineHeight: 1.3, marginBottom: 4 }}
-                    >
-                      {dish.nameNe.text}
-                      {!dish.nameNe.verified && (
-                        <span className="text-annotation" style={{ fontSize: '0.45rem', color: 'var(--muted-foreground)', marginLeft: 8 }}>
-                          [unverified]
-                        </span>
-                      )}
-                    </p>
-                  )}
-                  <p
-                    className="font-display"
-                    style={{ fontSize: 'clamp(1rem, 2.5vw, 1.4rem)', color: 'var(--foreground)', letterSpacing: '-0.01em', marginBottom: 8 }}
-                  >
-                    {dish.name[locale]}
-                  </p>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', lineHeight: 1.5, marginBottom: 12 }}>
-                    {dish.description[locale]}
-                  </p>
-
-                  <div className="flex items-center justify-between">
-                    <span
-                      className="font-display"
-                      style={{ fontSize: '1.1rem', color: 'var(--foreground)', fontVariantNumeric: 'tabular-nums' }}
-                    >
-                      {formatPrice(dish.price, locale)}
-                    </span>
-                    <Link
-                      href={`/${houseId}/carte`}
-                      className="text-annotation"
-                      style={{
-                        fontSize: '0.55rem',
-                        letterSpacing: '0.15em',
-                        padding: '8px 14px',
-                        backgroundColor: 'var(--primary)',
-                        color: 'var(--primary-foreground)',
-                        textDecoration: 'none',
-                        minHeight: 44,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      {locale === 'fr' ? 'AJOUTER' : 'ADD'}
-                    </Link>
-                  </div>
-                </div>
-              )) : (
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>
-                    {locale === 'fr' ?'PLACEHOLDER — Plats signatures à confirmer avec le propriétaire' :'PLACEHOLDER — Signature dishes to be confirmed with owner'}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div style={{ marginTop: 32 }}>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
                 href={`/${houseId}/carte`}
-                className="text-annotation underline-expand"
-                style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: 'var(--primary)' }}
+                className="text-annotation inline-flex min-h-11 items-center justify-center px-7 py-3.5"
+                style={{
+                  backgroundColor: 'var(--primary)',
+                  color: 'var(--primary-foreground)',
+                  letterSpacing: '0.14em',
+                  textDecoration: 'none',
+                  fontSize: '0.65rem',
+                }}
               >
-                {locale === 'fr' ? 'VOIR TOUTE LA CARTE →' : 'VIEW FULL MENU →'}
+                {locale === 'fr' ? 'COMMANDES →' : 'ORDER →'}
+              </Link>
+              <Link
+                href={`/${houseId}/contact`}
+                className="text-annotation inline-flex min-h-11 items-center justify-center px-7 py-3.5"
+                style={{
+                  border: '1px solid rgba(245,240,232,0.35)',
+                  color: 'var(--primary-foreground)',
+                  letterSpacing: '0.14em',
+                  textDecoration: 'none',
+                  fontSize: '0.65rem',
+                }}
+              >
+                {locale === 'fr' ? 'NOUS TROUVER →' : 'FIND US →'}
+              </Link>
+              <Link
+                href={`/${houseId}/a-propos`}
+                className="text-annotation underline-expand sm:ml-2"
+                style={{
+                  color: 'rgba(245,240,232,0.7)',
+                  letterSpacing: '0.14em',
+                  fontSize: '0.6rem',
+                  textDecoration: 'none',
+                }}
+              >
+                {locale === 'fr' ? 'À PROPOS' : 'ABOUT'}
               </Link>
             </div>
           </div>
         </section>
 
-        {/* ── 3. THE ROOM ────────────────────────────────────────────────── */}
+        {/* Practical info */}
+        <section
+          id="info"
+          ref={setRef('info')}
+          style={{
+            padding: 'clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 3rem)',
+            borderBottom: '1px solid var(--border)',
+            ...reveal('info'),
+          }}
+        >
+          <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
+            <div
+              style={{
+                border: '1px solid var(--border)',
+                backgroundColor: 'var(--card)',
+                padding: '1.5rem',
+              }}
+            >
+              <p
+                className="text-annotation mb-3"
+                style={{ color: 'var(--primary)', letterSpacing: '0.18em' }}
+              >
+                {locale === 'fr' ? 'ADRESSE' : 'ADDRESS'}
+              </p>
+              <p style={{ color: 'var(--foreground)', fontSize: '1rem', lineHeight: 1.5 }}>
+                {location.address}
+                <br />
+                {location.arrondissement}
+              </p>
+              <p
+                className="mt-3"
+                style={{ color: 'var(--muted-foreground)', fontSize: '0.8rem' }}
+              >
+                {location.metro[locale]}
+              </p>
+              <a
+                href={location.mapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-annotation mt-5 inline-block"
+                style={{
+                  color: 'var(--primary)',
+                  letterSpacing: '0.12em',
+                  fontSize: '0.6rem',
+                }}
+              >
+                {locale === 'fr' ? 'ITINÉRAIRE →' : 'DIRECTIONS →'}
+              </a>
+            </div>
+
+            <div
+              style={{
+                border: '1px solid var(--border)',
+                backgroundColor: 'var(--card)',
+                padding: '1.5rem',
+              }}
+            >
+              <p
+                className="text-annotation mb-3"
+                style={{ color: 'var(--primary)', letterSpacing: '0.18em' }}
+              >
+                {locale === 'fr' ? 'HORAIRES' : 'HOURS'}
+              </p>
+              <ul className="space-y-2">
+                {location.hoursLines[locale].map((line) => (
+                  <li
+                    key={line}
+                    style={{
+                      color: 'var(--muted-foreground)',
+                      fontSize: '0.85rem',
+                      lineHeight: 1.45,
+                    }}
+                  >
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div
+              style={{
+                border: '1px solid var(--border)',
+                backgroundColor: 'var(--card)',
+                padding: '1.5rem',
+              }}
+            >
+              <p
+                className="text-annotation mb-3"
+                style={{ color: 'var(--primary)', letterSpacing: '0.18em' }}
+              >
+                CONTACT
+              </p>
+              <a
+                href={`tel:${location.phone.replace(/\s/g, '')}`}
+                style={{
+                  color: 'var(--foreground)',
+                  fontSize: '1rem',
+                  textDecoration: 'none',
+                  display: 'block',
+                }}
+              >
+                {location.phone}
+              </a>
+              <p
+                className="mt-3"
+                style={{ color: 'var(--muted-foreground)', fontSize: '0.8rem' }}
+              >
+                {locale === 'fr'
+                  ? 'Appelez pour groupes & demandes spéciales.'
+                  : 'Call for groups & special requests.'}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {location.personality.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-annotation px-2 py-1"
+                    style={{
+                      border: '1px solid var(--border)',
+                      color: 'var(--muted-foreground)',
+                      fontSize: '0.5rem',
+                      letterSpacing: '0.12em',
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Menu preview */}
+        <section
+          id="menu-preview"
+          ref={setRef('menu-preview')}
+          style={{
+            padding: 'clamp(3rem, 7vw, 5.5rem) clamp(1.5rem, 4vw, 3rem)',
+            borderBottom: '1px solid var(--border)',
+            ...reveal('menu-preview'),
+          }}
+        >
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p
+                  className="text-annotation mb-3"
+                  style={{ color: 'var(--primary)', letterSpacing: '0.2em' }}
+                >
+                  {locale === 'fr' ? 'LA CARTE' : 'THE MENU'}
+                </p>
+                <h2
+                  className="font-display uppercase"
+                  style={{
+                    fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                    color: 'var(--foreground)',
+                    letterSpacing: '-0.03em',
+                    lineHeight: 0.92,
+                  }}
+                >
+                  {locale === 'fr' ? 'Ce que l\'on plie ici' : 'What we fold here'}
+                </h2>
+              </div>
+              <Link
+                href={`/${houseId}/carte`}
+                className="text-annotation"
+                style={{
+                  color: 'var(--primary)',
+                  letterSpacing: '0.14em',
+                  fontSize: '0.65rem',
+                  textDecoration: 'none',
+                }}
+              >
+                {locale === 'fr' ? 'VOIR LES COMMANDES →' : 'VIEW FULL MENU →'}
+              </Link>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {featured.map((dish) => (
+                <article
+                  key={dish.id}
+                  style={{
+                    border: '1px solid var(--border)',
+                    backgroundColor: 'var(--card)',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div className="relative aspect-[4/3] bg-[var(--secondary)]">
+                    {dish.image ? (
+                      <Image
+                        src={dish.image}
+                        alt={dish.name[locale]}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="p-5">
+                    <p
+                      className="text-annotation mb-2"
+                      style={{
+                        color: 'var(--muted-foreground)',
+                        fontSize: '0.5rem',
+                        letterSpacing: '0.16em',
+                      }}
+                    >
+                      {dish.category.toUpperCase()}
+                      {dish.signature
+                        ? ` · ${locale === 'fr' ? 'SIGNATURE' : 'SIGNATURE'}`
+                        : ''}
+                    </p>
+                    <h3
+                      className="font-display"
+                      style={{
+                        fontSize: '1.15rem',
+                        color: 'var(--foreground)',
+                        letterSpacing: '-0.02em',
+                        marginBottom: 8,
+                      }}
+                    >
+                      {dish.name[locale]}
+                    </h3>
+                    <p
+                      style={{
+                        fontSize: '0.8rem',
+                        color: 'var(--muted-foreground)',
+                        lineHeight: 1.5,
+                        marginBottom: 14,
+                        minHeight: '2.4em',
+                      }}
+                    >
+                      {dish.description[locale]}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span
+                        className="font-display"
+                        style={{
+                          fontSize: '1rem',
+                          fontVariantNumeric: 'tabular-nums',
+                        }}
+                      >
+                        {formatPrice(dish.price, locale)}
+                      </span>
+                      <Link
+                        href={`/${houseId}/carte`}
+                        className="text-annotation"
+                        style={{
+                          fontSize: '0.55rem',
+                          letterSpacing: '0.12em',
+                          padding: '8px 12px',
+                          backgroundColor: 'var(--primary)',
+                          color: 'var(--primary-foreground)',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        {locale === 'fr' ? 'COMMANDER' : 'ORDER'}
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Atmosphere */}
         <section
           id="room"
           ref={setRef('room')}
           style={{
-            padding: 'clamp(3rem, 8vw, 6rem) clamp(1.5rem, 4vw, 3rem)',
+            padding: 'clamp(3rem, 7vw, 5.5rem) clamp(1.5rem, 4vw, 3rem)',
             borderBottom: '1px solid var(--border)',
-            opacity: visible['room'] ? 1 : 0,
-            transform: visible['room'] ? 'translateY(0)' : 'translateY(40px)',
-            transition: 'opacity 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s, transform 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s',
+            ...reveal('room'),
           }}
         >
-          <div className="max-w-6xl mx-auto">
-            {/* Wide room photo placeholder */}
-            <div
-              style={{
-                aspectRatio: '16/7',
-                backgroundColor: 'var(--secondary)',
-                border: '1px solid var(--border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: 24,
-                padding: '1.5rem',
-              }}
-              role="img"
-              aria-label={`PLACEHOLDER — ${houseName} dining room, wide establishing shot, 16:7`}
-            >
-              <p
-                className="text-annotation"
-                style={{ fontSize: '0.55rem', letterSpacing: '0.12em', color: 'var(--muted-foreground)', textAlign: 'center', lineHeight: 1.6 }}
-              >
-                PLACEHOLDER — {houseName} dining room, wide establishing shot, 16:7
-              </p>
+          <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2">
+            <div className="relative aspect-[4/5] overflow-hidden border border-[var(--border)] md:aspect-[5/6]">
+              <Image
+                src={location.roomImage}
+                alt={`${houseName} atmosphere`}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
             </div>
-
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
               <p
+                className="text-annotation mb-4"
+                style={{ color: 'var(--primary)', letterSpacing: '0.2em' }}
+              >
+                {locale === 'fr' ? 'LA SALLE' : 'THE ROOM'}
+              </p>
+              <h2
+                className="font-display uppercase mb-5"
                 style={{
-                  fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
-                  color: 'var(--muted-foreground)',
-                  lineHeight: 1.6,
-                  maxWidth: '55ch',
+                  fontSize: 'clamp(2rem, 4.5vw, 3.25rem)',
+                  letterSpacing: '-0.03em',
+                  lineHeight: 0.92,
+                  color: 'var(--foreground)',
                 }}
               >
-                {/* TODO: Replace with real copy from owner interview */}
-                {locale === 'fr' ?'PLACEHOLDER — Une phrase vraie sur la salle, à fournir par le propriétaire après entretien.' :'PLACEHOLDER — One true sentence about the room, to be provided by owner after interview.'}
+                {locale === 'fr'
+                  ? 'Une table, deux maisons'
+                  : 'One table, two houses'}
+              </h2>
+              <p
+                style={{
+                  color: 'var(--muted-foreground)',
+                  fontSize: '1rem',
+                  lineHeight: 1.7,
+                  marginBottom: 28,
+                  maxWidth: '38ch',
+                }}
+              >
+                {locale === 'fr' ? location.descriptionFr : location.description}{' '}
+                {locale === 'fr'
+                  ? 'Momos pliés à la main, service rapide, ambiance chaude — venez pour le goût himalayen au cœur de Paris.'
+                  : 'Hand-folded momos, quick service, warm room — Himalayan flavour in the heart of Paris.'}
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+              <div className="flex flex-wrap gap-3">
                 <Link
                   href={`/${houseId}/a-propos`}
-                  className="text-annotation underline-expand"
-                  style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: 'var(--foreground)' }}
+                  className="text-annotation inline-flex min-h-11 items-center px-6 py-3"
+                  style={{
+                    border: '1px solid var(--border)',
+                    color: 'var(--foreground)',
+                    letterSpacing: '0.12em',
+                    textDecoration: 'none',
+                    fontSize: '0.6rem',
+                  }}
                 >
                   {locale === 'fr' ? 'À PROPOS →' : 'ABOUT →'}
                 </Link>
                 <Link
-                  href={`/${houseId}/contact`}
-                  className="text-annotation underline-expand"
-                  style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: 'var(--foreground)' }}
+                  href={`/${sisterHouseId}`}
+                  className="text-annotation inline-flex min-h-11 items-center px-6 py-3"
+                  style={{
+                    color: 'var(--primary)',
+                    letterSpacing: '0.12em',
+                    textDecoration: 'none',
+                    fontSize: '0.6rem',
+                  }}
                 >
-                  {locale === 'fr' ? 'NOUS TROUVER →' : 'FIND US →'}
+                  {locale === 'fr'
+                    ? `Maison sœur · ${sister.name} →`
+                    : `Sister house · ${sister.name} →`}
                 </Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── FOOTER STRIP ───────────────────────────────────────────────── */}
-        <section style={{ padding: 'clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 3rem)' }}>
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              {/* Hours summary */}
-              <div>
-                <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 4 }}>
-                  {locale === 'fr' ? 'HORAIRES' : 'HOURS'}
-                </p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--foreground)' }}>
-                  {locale === 'fr' ? '[VERIFY horaires avec le propriétaire]' : '[VERIFY hours with owner]'}
-                </p>
-              </div>
-
-              {/* Sister house */}
-              <div>
-                <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 4 }}>
-                  {locale === 'fr' ? 'MAISON SŒUR' : 'SISTER HOUSE'}
-                </p>
-                <Link
-                  href={`/${sisterHouseId}`}
-                  className="text-annotation underline-expand"
-                  style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: 'var(--primary)' }}
-                >
-                  {locale === 'fr'
-                    ? `Complet ? Momo House ${sisterHouseName} est à quelques minutes. [VERIFY] →`
-                    : `Full here? Momo House ${sisterHouseName} is a few minutes away. [VERIFY] →`}
-                </Link>
-              </div>
-
-              {/* Portal link */}
-              <div>
-                <Link
-                  href="/"
-                  className="text-annotation underline-expand"
-                  style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: 'var(--muted-foreground)' }}
-                >
-                  ← MOMO HOUSE PARIS
-                </Link>
-              </div>
+        {/* Bottom strip */}
+        <section
+          style={{
+            padding: 'clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 3rem)',
+            backgroundColor: 'var(--secondary)',
+          }}
+        >
+          <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p
+                className="text-annotation mb-2"
+                style={{
+                  color: 'var(--muted-foreground)',
+                  letterSpacing: '0.16em',
+                  fontSize: '0.55rem',
+                }}
+              >
+                {location.fullName}
+              </p>
+              <p style={{ color: 'var(--foreground)', fontSize: '0.95rem' }}>
+                {location.address}, {location.arrondissement}
+              </p>
             </div>
-
-            {/* Legal links */}
-            <div className="flex flex-wrap gap-4 mt-8 pt-6" style={{ borderTop: '1px solid var(--border)' }}>
-              {[
-                { href: '/mentions-legales', labelFr: 'Mentions légales', labelEn: 'Legal notice' },
-                { href: '/cgv', labelFr: 'CGV', labelEn: 'Terms of sale' },
-                { href: '/confidentialite', labelFr: 'Confidentialité', labelEn: 'Privacy' },
-              ].map(link => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-annotation underline-expand"
-                  style={{ fontSize: '0.55rem', letterSpacing: '0.12em', color: 'var(--muted-foreground)' }}
-                >
-                  {locale === 'fr' ? link.labelFr : link.labelEn}
-                </Link>
-              ))}
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/"
+                className="text-annotation inline-flex min-h-11 items-center px-5 py-3"
+                style={{
+                  border: '1px solid var(--border)',
+                  color: 'var(--foreground)',
+                  letterSpacing: '0.12em',
+                  textDecoration: 'none',
+                  fontSize: '0.6rem',
+                }}
+              >
+                ← {locale === 'fr' ? 'PORTAIL' : 'PORTAL'}
+              </Link>
+              <Link
+                href={`/${houseId}/panier`}
+                className="text-annotation inline-flex min-h-11 items-center px-5 py-3"
+                style={{
+                  backgroundColor: 'var(--primary)',
+                  color: 'var(--primary-foreground)',
+                  letterSpacing: '0.12em',
+                  textDecoration: 'none',
+                  fontSize: '0.6rem',
+                }}
+              >
+                {locale === 'fr' ? 'PANIER' : 'CART'}
+              </Link>
             </div>
           </div>
         </section>

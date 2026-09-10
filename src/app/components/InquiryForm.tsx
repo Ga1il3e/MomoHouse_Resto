@@ -421,7 +421,7 @@ export default function InquiryForm() {
                       {isFr ? 'Montmartre — 2e arrondissement' : 'Montmartre — 2nd arrondissement'}
                     </option>
                     <option value="poissonniere" style={{ backgroundColor: '#1a1a1a' }}>
-                      {isFr ? 'Poissonnière — 10e arrondissement' : 'Poissonnière — 10th arrondissement'}
+                      {isFr ? 'Poissonnière — Paris 9e' : 'Poissonnière — Paris 9th'}
                     </option>
                     <option value="no-preference" style={{ backgroundColor: '#1a1a1a' }}>
                       {isFr ? 'Sans préférence' : 'No preference'}

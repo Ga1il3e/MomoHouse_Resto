@@ -61,7 +61,7 @@ export default function Footer() {
           {locations?.map((loc, i) => (
             <Link
               key={loc?.id}
-              href={loc?.id === 'montmartre' ? '/montmartre' : '/poissonniere'}
+              href={loc.href}
               className="group inline-flex items-center gap-3 px-7 py-3.5 transition-all duration-300"
               style={{
                 backgroundColor: i === 0 ? 'var(--primary)' : 'transparent',
@@ -94,13 +94,13 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="px-6 md:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5" aria-label="Momo House — scroll to top">
+        <Link href="/" className="flex items-center gap-2.5" aria-label="Momo House — home" style={{ textDecoration: 'none' }}>
           <AppLogo size={28} />
           <div className="flex flex-col leading-none">
             <span className="font-display uppercase tracking-[0.15em]" style={{ fontSize: '0.75rem', color: 'var(--primary-foreground)' }}>MOMO</span>
             <span className="font-editorial uppercase tracking-[0.35em]" style={{ fontSize: '0.45rem', color: 'var(--primary)' }}>HOUSE</span>
           </div>
-        </button>
+        </Link>
 
         {/* Language switcher in footer */}
         <div className="flex items-center gap-0" style={{ border: '1px solid rgba(245,240,232,0.15)' }} role="group" aria-label="Language selector">

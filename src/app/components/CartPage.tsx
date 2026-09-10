@@ -72,7 +72,7 @@ export default function CartPage({ houseId }: CartPageProps) {
 
   return (
     <>
-      <Navbar />
+      <Navbar variant="house" houseId={houseId} />
       <div aria-live="polite" aria-atomic="true" className="sr-only">{liveMsg}</div>
 
       <main style={{ backgroundColor: 'var(--background)', minHeight: '100vh', paddingTop: '5rem' }}>
@@ -431,7 +431,7 @@ export default function CartPage({ houseId }: CartPageProps) {
               <p style={{ fontSize: '0.7rem', color: 'var(--muted-foreground)', marginBottom: 16 }}>
                 {locale === 'fr' ? 'En passant commande, vous acceptez nos ' : 'By placing an order, you accept our '}
                 <Link
-                  href={`/${houseId}/cgv`}
+                  href="/cgv"
                   style={{ color: 'var(--primary)', textDecoration: 'underline' }}
                 >
                   {locale === 'fr' ? 'conditions générales de vente' : 'terms of sale'}

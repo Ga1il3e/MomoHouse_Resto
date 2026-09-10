@@ -45,12 +45,11 @@ export default function ContactPage({ houseId }: ContactPageProps) {
     return () => observer.disconnect();
   }, []);
 
-  const mapsUrl = houseId === 'montmartre' ?'https://maps.app.goo.gl/55qtfb5pg6BrzdRx8'
-    : 'https://maps.app.goo.gl/PBDSGSAcVWJjssXDA';
+  const mapsUrl = location.mapsUrl;
 
   return (
     <>
-      <Navbar />
+      <Navbar variant="house" houseId={houseId} />
       <main style={{ backgroundColor: 'var(--background)', minHeight: '100vh', paddingTop: '5rem' }}>
         {/* Breadcrumb */}
         <div style={{ borderBottom: '1px solid var(--border)', padding: '1rem 1.5rem' }}>
