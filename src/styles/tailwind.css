@@ -191,7 +191,10 @@
     transition: clip-path 1s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .clip-reveal.visible {
+  .clip-reveal.visible,
+  .reveal-up.visible .clip-reveal,
+  .reveal-left.visible .clip-reveal,
+  .reveal-right.visible .clip-reveal {
     clip-path: inset(0 0% 0 0);
   }
 
@@ -248,6 +251,57 @@
 
   .magnetic-btn {
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hover-lift {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  .dish-row {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dish-row:hover {
+    transform: translateY(-4px);
+  }
+
+  .dish-row-image {
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dish-row:hover .dish-row-image {
+    transform: scale(1.05);
+  }
+
+  .chip-fade {
+    transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sheet-backdrop {
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sheet-backdrop.visible {
+    opacity: 1;
+  }
+
+  .sheet-panel {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sheet-panel.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .no-cursor {
@@ -341,7 +395,12 @@
   .reveal-up,
   .reveal-left,
   .reveal-right,
-  .clip-reveal {
+  .clip-reveal,
+  .hover-lift,
+  .dish-row,
+  .dish-row-image,
+  .sheet-backdrop,
+  .sheet-panel {
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;

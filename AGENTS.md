@@ -14,7 +14,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Keep location/branch pages visually consistent with each other (e.g. Poissonnière should match the Montmartre page structure and design language).
 - Keep Prettier configured and applied so Vercel builds do not fail on formatting.
 - After meaningful site changes, push to the GitHub remote when asked (short requests like "push" / "update the github").
-- Homepage is a brand portal whose job is choosing a house; keep full menus, hours, booking, and order flows on house pages, not the portal.
+- Homepage is a brand portal whose job is choosing a house; keep full menus, hours, booking/reservation, and order flows on house pages. Portal reservation may select a house and must require an explicit house (no "no preference"); on house pages, lock reservation to that house with no house picker. Keep the footer house-picker ("WHERE ARE WE EATING?") on `/` only—not on house pages.
+- Keep an explicit Reserve / Réserver CTA in the site navbar.
 - Never present unverified `[VERIFY]` facts (phones, hours, ratings, postcodes, walking time) as truth in copy or structured data; leave TODOs until confirmed.
 - Prefer authentic food or storefront photography (especially user-supplied assets) over 3D dumpling assets, stock, or AI-generated steamed-dumpling hero imagery.
 - Label menu/order navigation and pages as "Commandes" (not "Voir la carte").
@@ -33,4 +34,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - House/menu facts live in `src/data/locations.ts` and `src/data/menu.ts` (menu prices still TODO until owner-confirmed).
 - Montmartre is at 85 Rue Montmartre, 75002 (Sentier/Montorgueil), not the Montmartre hill in the 18th; Poissonnière is at 46 Rue Poissonnière (postcode still unverified).
 - Momo House Supabase host is `viwwcranivvozrwddxfa.supabase.co`; credentials live only in `.env.local` (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`). There is no in-app Supabase client yet. Never commit `.env` / `.env.local`.
-- Inquiry/cart flows are client-side UI only (no booking/order backend wired yet).
+- Inquiry/cart/reservation flows are client-side UI only (no booking/order backend wired yet); portal can pick a house, house pages lock the house.

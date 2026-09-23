@@ -7,6 +7,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { getMenuByHouse, formatPrice, MENU_CATEGORIES, type Dish, ALLERGEN_LABELS } from '@/data/menu';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/components/Footer';
+import Reveal from '@/app/components/Reveal';
 
 type HouseId = 'montmartre' | 'poissonniere';
 
@@ -62,25 +63,46 @@ function DietBadge({ diet }: { diet: ('vegetarian' | 'vegan')[] }) {
 interface DishRowProps {
   dish: Dish;
   locale: 'fr' | 'en';
+  delay?: number;
   onAdd: (dish: Dish, variantId?: string) => void;
   onOpen: (dish: Dish) => void;
 }
 
-function DishRow({ dish, locale, onAdd, onOpen }: DishRowProps) {
+function DishRow({ dish, locale, delay = 0, onAdd, onOpen }: DishRowProps) {
   const [selectedVariant, setSelectedVariant] = useState(dish.variants?.[0]?.id ?? '');
   const priceToShow = dish.variants
     ? dish.price + (dish.variants.find(v => v.id === selectedVariant)?.priceDelta ?? 0)
     : dish.price;
 
   return (
-    <li
-      className="group"
+    <Reveal
+      as="li"
+      delay={delay}
       style={{
         borderBottom: '1px solid var(--border)',
-        opacity: dish.available ? 1 : 0.5,
       }}
     >
-      <div className="flex items-start gap-4 py-5 px-0">
+      <div
+        className="group dish-row flex items-start gap-4 py-5 px-0"
+        style={{ opacity: dish.available ? 1 : 0.5 }}
+      >
+        {dish.image ? (
+          <div
+            className="relative flex-shrink-0 overflow-hidden"
+            style={{
+              width: 72,
+              height: 72,
+              border: '1px solid var(--border)',
+              backgroundColor: 'var(--secondary)',
+            }}
+          >
+            <img
+              src={dish.image}
+              alt=""
+              className="dish-row-image absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
+        ) : null}
         {/* Main info — clickable to open detail */}
         <button
           className="flex-1 text-left"
@@ -205,7 +227,7 @@ function DishRow({ dish, locale, onAdd, onOpen }: DishRowProps) {
           )}
         </div>
       </div>
-    </li>
+    </Reveal>
   );
 }
 
@@ -218,14 +240,25 @@ interface DishSheetProps {
 
 function DishSheet({ dish, locale, onClose, onAdd }: DishSheetProps) {
   const [selectedVariant, setSelectedVariant] = useState('');
+  const [rendered, setRendered] = useState<Dish | null>(dish);
+  const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (dish) {
+      setRendered(dish);
       setSelectedVariant(dish.variants?.[0]?.id ?? '');
-      closeRef.current?.focus();
+      const frame = requestAnimationFrame(() => setOpen(true));
+      return () => cancelAnimationFrame(frame);
     }
+    setOpen(false);
+    const timer = window.setTimeout(() => setRendered(null), 420);
+    return () => window.clearTimeout(timer);
   }, [dish]);
+
+  useEffect(() => {
+    if (rendered) closeRef.current?.focus();
+  }, [rendered]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -233,27 +266,27 @@ function DishSheet({ dish, locale, onClose, onAdd }: DishSheetProps) {
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  if (!dish) return null;
+  if (!rendered) return null;
 
-  const priceToShow = dish.variants
-    ? dish.price + (dish.variants.find(v => v.id === selectedVariant)?.priceDelta ?? 0)
-    : dish.price;
+  const priceToShow = rendered.variants
+    ? rendered.price + (rendered.variants.find(v => v.id === selectedVariant)?.priceDelta ?? 0)
+    : rendered.price;
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={dish.name[locale]}
+      aria-label={rendered.name[locale]}
       className="fixed inset-0 z-[600] flex items-end md:items-center justify-center"
     >
       <div
-        className="absolute inset-0"
+        className={`sheet-backdrop absolute inset-0 ${open ? 'visible' : ''}`}
         style={{ backgroundColor: 'rgba(28,28,26,0.6)' }}
         onClick={onClose}
         aria-hidden="true"
       />
       <div
-        className="relative w-full md:max-w-lg mx-auto"
+        className={`sheet-panel relative w-full md:max-w-lg mx-auto ${open ? 'visible' : ''}`}
         style={{
           backgroundColor: 'var(--background)',
           borderTop: '1px solid var(--border)',
@@ -273,7 +306,7 @@ function DishSheet({ dish, locale, onClose, onAdd }: DishSheetProps) {
         </button>
 
         <div className="mb-1">
-          {dish.sampleOnly && (
+          {rendered.sampleOnly && (
             <p
               className="text-annotation"
               style={{ fontSize: '0.5rem', letterSpacing: '0.15em', color: 'var(--muted-foreground)', marginBottom: 8 }}
@@ -285,12 +318,12 @@ function DishSheet({ dish, locale, onClose, onAdd }: DishSheetProps) {
             className="font-display"
             style={{ fontSize: 'clamp(1.4rem, 4vw, 2rem)', color: 'var(--foreground)', letterSpacing: '-0.02em', marginBottom: 4 }}
           >
-            {dish.name[locale]}
+            {rendered.name[locale]}
           </h2>
-          {dish.nameNe && (
+          {rendered.nameNe && (
             <p lang="ne" style={{ fontSize: '1.1rem', color: 'var(--muted-foreground)', lineHeight: 1.5, marginBottom: 8 }}>
-              {dish.nameNe.text}
-              {!dish.nameNe.verified && (
+              {rendered.nameNe.text}
+              {!rendered.nameNe.verified && (
                 <span className="text-annotation" style={{ fontSize: '0.45rem', color: 'var(--muted-foreground)', marginLeft: 6 }}>
                   [{locale === 'fr' ? 'non vérifié' : 'unverified'}]
                 </span>
@@ -300,33 +333,33 @@ function DishSheet({ dish, locale, onClose, onAdd }: DishSheetProps) {
         </div>
 
         <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', lineHeight: 1.6, marginBottom: 16 }}>
-          {dish.description[locale]}
+          {rendered.description[locale]}
         </p>
 
         {/* Allergens — full names */}
-        {dish.allergens.length > 0 && (
+        {rendered.allergens.length > 0 && (
           <div style={{ marginBottom: 16, padding: '10px 12px', border: '1px solid var(--border)', backgroundColor: 'var(--secondary)' }}>
             <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: 'var(--muted-foreground)', marginBottom: 4 }}>
               {locale === 'fr' ? 'ALLERGÈNES' : 'ALLERGENS'}
             </p>
             <p style={{ fontSize: '0.75rem', color: 'var(--foreground)' }}>
-              {dish.allergens.map(a => ALLERGEN_LABELS[a][locale]).join(', ')}
+              {rendered.allergens.map(a => ALLERGEN_LABELS[a][locale]).join(', ')}
             </p>
           </div>
         )}
 
         {/* Variants */}
-        {dish.variants && dish.variants.length > 1 && (
+        {rendered.variants && rendered.variants.length > 1 && (
           <div style={{ marginBottom: 16 }}>
             <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: 'var(--muted-foreground)', marginBottom: 8 }}>
               {locale === 'fr' ? 'STYLE' : 'STYLE'}
             </p>
             <div className="flex flex-wrap gap-2">
-              {dish.variants.map(v => (
+              {rendered.variants.map(v => (
                 <button
                   key={v.id}
                   onClick={() => setSelectedVariant(v.id)}
-                  className="text-annotation"
+                  className="text-annotation chip-fade"
                   style={{
                     fontSize: '0.6rem',
                     letterSpacing: '0.12em',
@@ -354,9 +387,9 @@ function DishSheet({ dish, locale, onClose, onAdd }: DishSheetProps) {
           >
             {formatPrice(priceToShow, locale)}
           </span>
-          {dish.available && dish.orderable && (
+          {rendered.available && rendered.orderable && (
             <button
-              onClick={() => { onAdd(dish, selectedVariant || undefined); onClose(); }}
+              onClick={() => { onAdd(rendered, selectedVariant || undefined); onClose(); }}
               className="text-annotation"
               style={{
                 fontSize: '0.65rem',
@@ -435,7 +468,7 @@ export default function MenuPage({ houseId }: MenuPageProps) {
       <main style={{ backgroundColor: 'var(--background)', minHeight: '100vh', paddingTop: '5rem' }}>
         {/* Page header */}
         <header style={{ borderBottom: '1px solid var(--border)', padding: '2rem 1.5rem 1.5rem' }}>
-          <div className="max-w-4xl mx-auto">
+          <Reveal className="max-w-4xl mx-auto">
             <div className="flex items-center gap-3 mb-2">
               <Link
                 href={`/${houseId}`}
@@ -459,7 +492,7 @@ export default function MenuPage({ houseId }: MenuPageProps) {
               {/* TODO: Verify this claim with owner before publishing */}
               {locale === 'fr' ?'Momo House '+ houseName + ' — Contenu exemple, prix à confirmer' :'Momo House ' + houseName + ' — Sample content, prices to be confirmed'}
             </p>
-          </div>
+          </Reveal>
         </header>
 
         {/* Sticky category bar */}
@@ -480,7 +513,7 @@ export default function MenuPage({ houseId }: MenuPageProps) {
                   role="tab"
                   aria-selected={activeCategory === cat}
                   onClick={() => scrollToCategory(cat)}
-                  className="text-annotation flex-shrink-0"
+                  className="text-annotation chip-fade flex-shrink-0"
                   style={{
                     fontSize: '0.6rem',
                     letterSpacing: '0.15em',
@@ -509,7 +542,7 @@ export default function MenuPage({ houseId }: MenuPageProps) {
                   <button
                     key={f.key}
                     onClick={() => setFilters(prev => ({ ...prev, [f.key]: !prev[f.key as keyof typeof filters] }))}
-                    className="text-annotation flex-shrink-0"
+                    className="text-annotation chip-fade flex-shrink-0"
                     style={{
                       fontSize: '0.55rem',
                       letterSpacing: '0.12em',
@@ -572,31 +605,34 @@ export default function MenuPage({ houseId }: MenuPageProps) {
                 aria-labelledby={`cat-${cat}`}
                 style={{ paddingTop: '2rem' }}
               >
-                <h2
-                  id={`cat-${cat}`}
-                  className="font-display"
-                  style={{
-                    fontSize: 'clamp(1.2rem, 3vw, 1.8rem)',
-                    color: 'var(--foreground)',
-                    letterSpacing: '-0.02em',
-                    marginBottom: 4,
-                    paddingBottom: 12,
-                    borderBottom: '1px solid var(--border)',
-                  }}
-                >
-                  {MENU_CATEGORIES[cat]?.[locale] ?? cat}
-                </h2>
+                <Reveal>
+                  <h2
+                    id={`cat-${cat}`}
+                    className="font-display"
+                    style={{
+                      fontSize: 'clamp(1.2rem, 3vw, 1.8rem)',
+                      color: 'var(--foreground)',
+                      letterSpacing: '-0.02em',
+                      marginBottom: 4,
+                      paddingBottom: 12,
+                      borderBottom: '1px solid var(--border)',
+                    }}
+                  >
+                    {MENU_CATEGORIES[cat]?.[locale] ?? cat}
+                  </h2>
+                </Reveal>
                 {catDishes.length === 0 ? (
                   <p style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', padding: '20px 0' }}>
                     {locale === 'fr' ? 'Aucun plat ne correspond aux filtres.' : 'No dishes match the current filters.'}
                   </p>
                 ) : (
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {catDishes.map(dish => (
+                    {catDishes.map((dish, i) => (
                       <DishRow
                         key={dish.id}
                         dish={dish}
                         locale={locale}
+                        delay={Math.min(i, 6) * 0.06}
                         onAdd={handleAdd}
                         onOpen={setOpenDish}
                       />
@@ -608,7 +644,7 @@ export default function MenuPage({ houseId }: MenuPageProps) {
           })}
 
           {/* Sister house link */}
-          <div
+          <Reveal
             style={{
               marginTop: '3rem',
               padding: '1.5rem',
@@ -631,7 +667,7 @@ export default function MenuPage({ houseId }: MenuPageProps) {
             >
               {locale === 'fr' ? `VOIR LA CARTE ${sisterHouseName.toUpperCase()}` : `VIEW ${sisterHouseName.toUpperCase()} MENU`} →
             </Link>
-          </div>
+          </Reveal>
         </div>
       </main>
 

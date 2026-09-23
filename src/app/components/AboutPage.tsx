@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/components/Footer';
+import Reveal from '@/app/components/Reveal';
 
 type HouseId = 'montmartre' | 'poissonniere';
 
@@ -33,24 +34,6 @@ export default function AboutPage({ houseId }: AboutPageProps) {
   const houseName = houseId === 'montmartre' ? 'Montmartre' : 'Poissonnière';
   const sisterHouseId = houseId === 'montmartre' ? 'poissonniere' : 'montmartre';
   const sisterHouseName = houseId === 'montmartre' ? 'Poissonnière' : 'Montmartre';
-
-  const [visible, setVisible] = useState<Record<string, boolean>>({});
-  const refs = useRef<Record<string, HTMLElement | null>>({});
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) setVisible(prev => ({ ...prev, [e.target.id]: true }));
-        });
-      },
-      { threshold: 0.15 }
-    );
-    Object.values(refs.current).forEach(el => { if (el) observer.observe(el); });
-    return () => observer.disconnect();
-  }, []);
-
-  const setRef = (id: string) => (el: HTMLElement | null) => { refs.current[id] = el; };
 
   const chapters = [
     {
@@ -115,16 +98,12 @@ export default function AboutPage({ houseId }: AboutPageProps) {
         {/* Opening statement */}
         <section
           id="about-hero"
-          ref={setRef('about-hero')}
           style={{
             padding: 'clamp(3rem, 8vw, 6rem) 1.5rem',
             borderBottom: '1px solid var(--border)',
-            opacity: visible['about-hero'] ? 1 : 0,
-            transform: visible['about-hero'] ? 'translateY(0)' : 'translateY(30px)',
-            transition: 'opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1)',
           }}
         >
-          <div className="max-w-5xl mx-auto">
+          <Reveal className="max-w-5xl mx-auto">
             <p className="text-annotation" style={{ fontSize: '0.6rem', letterSpacing: '0.25em', color: 'var(--primary)', marginBottom: 16 }}>
               MOMO HOUSE {houseName.toUpperCase()}
             </p>
@@ -141,27 +120,24 @@ export default function AboutPage({ houseId }: AboutPageProps) {
               {/* TODO: Replace with real statement from owner interview */}
               PLACEHOLDER — {locale === 'fr' ? 'Une phrase forte, vraie, de l\'entretien propriétaire.' : 'A strong, true statement from the owner interview.'}
             </h1>
-          </div>
+          </Reveal>
         </section>
 
         {/* Chapters */}
         {chapters.map((chapter, i) => (
-          <section
+          <Reveal
             key={chapter.id}
+            as="section"
             id={`chapter-${chapter.id}`}
-            ref={setRef(`chapter-${chapter.id}`)}
+            delay={i * 0.1}
             style={{
               borderBottom: '1px solid var(--border)',
               padding: 'clamp(2.5rem, 6vw, 5rem) 1.5rem',
-              opacity: visible[`chapter-${chapter.id}`] ? 1 : 0,
-              transform: visible[`chapter-${chapter.id}`] ? 'translateY(0)' : 'translateY(40px)',
-              transition: `opacity 0.9s cubic-bezier(0.16,1,0.3,1) ${i * 0.1}s, transform 0.9s cubic-bezier(0.16,1,0.3,1) ${i * 0.1}s`,
             }}
           >
             <div className={`max-w-5xl mx-auto flex flex-col ${chapter.imageLeft ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-16 items-start`}>
-              {/* Image placeholder */}
               <div
-                className="w-full md:w-5/12 flex-shrink-0"
+                className="clip-reveal w-full md:w-5/12 flex-shrink-0"
                 style={{
                   aspectRatio: '4/5',
                   backgroundColor: 'var(--secondary)',
@@ -182,7 +158,6 @@ export default function AboutPage({ houseId }: AboutPageProps) {
                 </p>
               </div>
 
-              {/* Text */}
               <div className="flex-1 flex flex-col justify-center">
                 <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.25em', color: 'var(--primary)', marginBottom: 12 }}>
                   0{i + 1}
@@ -198,15 +173,15 @@ export default function AboutPage({ houseId }: AboutPageProps) {
                 </p>
               </div>
             </div>
-          </section>
+          </Reveal>
         ))}
 
         {/* Closing links */}
         <section style={{ padding: 'clamp(2rem, 5vw, 4rem) 1.5rem', borderBottom: '1px solid var(--border)' }}>
-          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row gap-4">
+          <Reveal className="max-w-5xl mx-auto flex flex-col sm:flex-row gap-4">
             <Link
               href={`/${houseId}/carte`}
-              className="text-annotation"
+              className="text-annotation hover-lift"
               style={{
                 fontSize: '0.65rem',
                 letterSpacing: '0.15em',
@@ -221,7 +196,7 @@ export default function AboutPage({ houseId }: AboutPageProps) {
             </Link>
             <Link
               href={`/${houseId}/contact`}
-              className="text-annotation"
+              className="text-annotation hover-lift"
               style={{
                 fontSize: '0.65rem',
                 letterSpacing: '0.15em',
@@ -234,12 +209,12 @@ export default function AboutPage({ houseId }: AboutPageProps) {
             >
               {locale === 'fr' ? 'NOUS TROUVER →' : 'FIND US →'}
             </Link>
-          </div>
+          </Reveal>
         </section>
 
         {/* Sister house */}
         <section style={{ padding: '2rem 1.5rem' }}>
-          <div className="max-w-5xl mx-auto">
+          <Reveal className="max-w-5xl mx-auto">
             <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 8 }}>
               {locale === 'fr' ? 'NOTRE MAISON SŒUR' : 'OUR SISTER HOUSE'}
             </p>
@@ -250,7 +225,7 @@ export default function AboutPage({ houseId }: AboutPageProps) {
             >
               {locale === 'fr' ? `DÉCOUVRIR ${sisterHouseName.toUpperCase()} →` : `DISCOVER ${sisterHouseName.toUpperCase()} →`}
             </Link>
-          </div>
+          </Reveal>
         </section>
       </main>
       <Footer />

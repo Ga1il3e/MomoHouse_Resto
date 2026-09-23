@@ -4,6 +4,7 @@ import React, { useEffect, useId, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { getLocation, locations, type Location } from '@/data/locations';
 import DatePicker from '@/app/components/DatePicker';
+import Reveal from '@/app/components/Reveal';
 
 type HouseId = Location['id'];
 
@@ -219,7 +220,7 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
         aria-label={isFr ? 'Formulaire de contact' : 'Inquiry form'}
       >
         <div className="mx-auto max-w-[1600px] px-6 md:px-10">
-          <div
+          <Reveal
             className="mx-auto max-w-xl px-8 py-14 text-center md:px-12"
             style={{
               border: '1px solid rgba(245,240,232,0.12)',
@@ -316,7 +317,7 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
             >
               {isFr ? 'NOUVELLE DEMANDE' : 'NEW INQUIRY'}
             </button>
-          </div>
+          </Reveal>
         </div>
       </section>
     );
@@ -359,7 +360,7 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1200px] px-6 md:px-10">
-        <div className="mb-10 max-w-2xl md:mb-12">
+        <Reveal className="mb-10 max-w-2xl md:mb-12">
           <span
             className="text-annotation mb-3 block"
             style={{ color: 'var(--primary)', letterSpacing: '0.2em' }}
@@ -400,7 +401,7 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
                 ? 'Choisissez une maison, une date et le nombre de convives. Réponse sous 24h.'
                 : 'Choose a house, a date, and your party size. Reply within 24h.'}
           </p>
-        </div>
+        </Reveal>
 
         <form
           onSubmit={handleSubmit}
@@ -414,7 +415,7 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
           }}
         >
           {!locationLocked ? (
-            <div className="mb-8">
+            <Reveal delay={0.1} className="mb-8">
               <p style={labelStyle}>
                 {isFr ? 'MAISON' : 'HOUSE'}
               </p>
@@ -426,7 +427,7 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
                       key={loc.id}
                       type="button"
                       onClick={() => handleChange('location', loc.id)}
-                      className="text-left transition-all duration-300"
+                      className="hover-lift text-left transition-all duration-300"
                       style={{
                         minHeight: 88,
                         padding: '1rem 1.1rem',
@@ -487,9 +488,10 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
                   {errors.location}
                 </p>
               ) : null}
-            </div>
+            </Reveal>
           ) : (
-            <div
+            <Reveal
+              delay={0.1}
               className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
               style={{
                 border: '1px solid rgba(245,240,232,0.14)',
@@ -528,10 +530,10 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
                 </p>
               </div>
               <input type="hidden" name="location" value={houseId} />
-            </div>
+            </Reveal>
           )}
 
-          <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <Reveal delay={0.18} className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Field
               id={`${uid}-name`}
               label="FULL NAME"
@@ -667,9 +669,10 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
                 }}
               />
             </div>
-          </div>
+          </Reveal>
 
-          <div
+          <Reveal
+            delay={0.26}
             className="flex flex-col gap-4 pt-6 sm:flex-row sm:items-center sm:justify-between"
             style={{ borderTop: '1px solid rgba(245,240,232,0.1)' }}
           >
@@ -706,7 +709,7 @@ export default function InquiryForm({ houseId }: InquiryFormProps) {
                 ? 'Réponse sous 24h · Walk-ins bienvenus · Aucune carte requise'
                 : 'Reply within 24h · Walk-ins welcome · No card required'}
             </p>
-          </div>
+          </Reveal>
         </form>
       </div>
     </section>

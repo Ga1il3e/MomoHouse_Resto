@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import Navbar from '@/app/components/Navbar';
 import InquiryForm from '@/app/components/InquiryForm';
 import Footer from '@/components/Footer';
+import Reveal from '@/app/components/Reveal';
 import { locations } from '@/data/locations';
 
 type HouseId = 'montmartre' | 'poissonniere';
@@ -34,17 +35,6 @@ export default function ContactPage({ houseId }: ContactPageProps) {
   const sisterHouseName = houseId === 'montmartre' ? 'Poissonnière' : 'Montmartre';
 
   const [todayIndex] = useState(() => new Date().getDay() === 0 ? 6 : new Date().getDay() - 1);
-  const [visible, setVisible] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.1 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   const mapsUrl = location.mapsUrl;
 
@@ -72,16 +62,18 @@ export default function ContactPage({ houseId }: ContactPageProps) {
         {/* Above the fold — address, phone, status */}
         <section style={{ padding: 'clamp(2rem, 5vw, 4rem) 1.5rem', borderBottom: '1px solid var(--border)' }}>
           <div className="max-w-5xl mx-auto">
-            <h1
-              className="font-display"
-              style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', color: 'var(--foreground)', letterSpacing: '-0.03em', lineHeight: 0.9, marginBottom: 32 }}
-            >
-              {locale === 'fr' ? 'Nous Trouver' : 'Find Us'}
-            </h1>
+            <Reveal>
+              <h1
+                className="font-display"
+                style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', color: 'var(--foreground)', letterSpacing: '-0.03em', lineHeight: 0.9, marginBottom: 32 }}
+              >
+                {locale === 'fr' ? 'Nous Trouver' : 'Find Us'}
+              </h1>
+            </Reveal>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Address */}
-              <div>
+              <Reveal delay={0.08}>
                 <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 8 }}>
                   {locale === 'fr' ? 'ADRESSE' : 'ADDRESS'}
                 </p>
@@ -109,10 +101,10 @@ export default function ContactPage({ houseId }: ContactPageProps) {
                     {locale === 'fr' ? 'OUVRIR DANS MAPS →' : 'OPEN IN MAPS →'}
                   </p>
                 </a>
-              </div>
+              </Reveal>
 
               {/* Phone */}
-              <div>
+              <Reveal delay={0.16}>
                 <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 8 }}>
                   {locale === 'fr' ? 'TÉLÉPHONE' : 'PHONE'}
                 </p>
@@ -136,10 +128,10 @@ export default function ContactPage({ houseId }: ContactPageProps) {
                     {locale === 'fr' ? 'APPELER →' : 'CALL →'}
                   </p>
                 </a>
-              </div>
+              </Reveal>
 
               {/* Status */}
-              <div>
+              <Reveal delay={0.24}>
                 <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 8 }}>
                   {locale === 'fr' ? 'STATUT' : 'STATUS'}
                 </p>
@@ -153,10 +145,10 @@ export default function ContactPage({ houseId }: ContactPageProps) {
                     {locale === 'fr' ? 'Horaires à confirmer [VERIFY]' : 'Hours to be confirmed [VERIFY]'}
                   </span>
                 </div>
-              </div>
+              </Reveal>
 
               {/* Reservations */}
-              <div>
+              <Reveal delay={0.32}>
                 <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 8 }}>
                   {locale === 'fr' ? 'RÉSERVATIONS' : 'RESERVATIONS'}
                 </p>
@@ -177,26 +169,24 @@ export default function ContactPage({ houseId }: ContactPageProps) {
                 >
                   {locale === 'fr' ? 'FORMULAIRE ↓' : 'FORM ↓'}
                 </a>
-              </div>
+              </Reveal>
             </div>
           </div>
         </section>
 
         {/* Hours block */}
         <section
-          ref={sectionRef}
           style={{
             padding: 'clamp(2rem, 5vw, 4rem) 1.5rem',
             borderBottom: '1px solid var(--border)',
-            opacity: visible ? 1 : 0,
-            transform: visible ? 'translateY(0)' : 'translateY(30px)',
-            transition: 'opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1)',
           }}
         >
           <div className="max-w-5xl mx-auto">
-            <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 16 }}>
-              {locale === 'fr' ? 'HORAIRES D\'OUVERTURE' : 'OPENING HOURS'}
-            </p>
+            <Reveal>
+              <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 16 }}>
+                {locale === 'fr' ? 'HORAIRES D\'OUVERTURE' : 'OPENING HOURS'}
+              </p>
+            </Reveal>
             <div
               style={{
                 padding: '10px 14px',
@@ -211,8 +201,9 @@ export default function ContactPage({ houseId }: ContactPageProps) {
             </div>
             <div style={{ border: '1px solid var(--border)' }}>
               {HOURS_PLACEHOLDER.map((row, i) => (
-                <div
+                <Reveal
                   key={i}
+                  delay={Math.min(i, 6) * 0.06}
                   className="flex items-center justify-between"
                   style={{
                     padding: '10px 16px',
@@ -243,7 +234,7 @@ export default function ContactPage({ houseId }: ContactPageProps) {
                   >
                     {row.ranges.join(' · ')}
                   </span>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -252,19 +243,21 @@ export default function ContactPage({ houseId }: ContactPageProps) {
         {/* Getting there */}
         <section style={{ padding: 'clamp(2rem, 5vw, 4rem) 1.5rem', borderBottom: '1px solid var(--border)' }}>
           <div className="max-w-5xl mx-auto">
-            <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 16 }}>
-              {locale === 'fr' ? 'Y ACCÉDER' : 'GETTING THERE'}
-            </p>
+            <Reveal>
+              <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 16 }}>
+                {locale === 'fr' ? 'Y ACCÉDER' : 'GETTING THERE'}
+              </p>
+            </Reveal>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
+              <Reveal delay={0.08}>
                 <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: 'var(--foreground)', marginBottom: 8 }}>
                   {locale === 'fr' ? 'MÉTRO' : 'METRO'}
                 </p>
                 <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', lineHeight: 1.6 }}>
                   {locale === 'fr' ?'Station(s) la plus proche : [VERIFY]' :'Nearest station(s): [VERIFY]'}
                 </p>
-              </div>
-              <div>
+              </Reveal>
+              <Reveal delay={0.16}>
                 <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: 'var(--foreground)', marginBottom: 8 }}>
                   {locale === 'fr' ? 'MAISON SŒUR' : 'SISTER HOUSE'}
                 </p>
@@ -273,7 +266,7 @@ export default function ContactPage({ houseId }: ContactPageProps) {
                     ? `Momo House ${sisterHouseName} : [VERIFY temps de marche]`
                     : `Momo House ${sisterHouseName}: [VERIFY walking time]`}
                 </p>
-              </div>
+              </Reveal>
             </div>
           </div>
         </section>
@@ -281,11 +274,15 @@ export default function ContactPage({ houseId }: ContactPageProps) {
         {/* Map */}
         <section style={{ padding: 'clamp(2rem, 5vw, 4rem) 1.5rem', borderBottom: '1px solid var(--border)' }}>
           <div className="max-w-5xl mx-auto">
-            <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 16 }}>
-              {locale === 'fr' ? 'CARTE' : 'MAP'}
-            </p>
+            <Reveal>
+              <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 16 }}>
+                {locale === 'fr' ? 'CARTE' : 'MAP'}
+              </p>
+            </Reveal>
             {/* Static map placeholder — no iframe on first load */}
-            <div
+            <Reveal
+              variant="clip"
+              delay={0.08}
               style={{
                 aspectRatio: '16/7',
                 backgroundColor: 'var(--secondary)',
@@ -296,9 +293,12 @@ export default function ContactPage({ houseId }: ContactPageProps) {
                 justifyContent: 'center',
                 gap: 12,
               }}
-              role="img"
-              aria-label={`Map placeholder for Momo House ${houseName}`}
             >
+              <div
+                role="img"
+                aria-label={`Map placeholder for Momo House ${houseName}`}
+                className="flex h-full w-full flex-col items-center justify-center gap-3"
+              >
               <p
                 className="text-annotation"
                 style={{ fontSize: '0.55rem', letterSpacing: '0.12em', color: 'var(--muted-foreground)', textAlign: 'center' }}
@@ -323,13 +323,14 @@ export default function ContactPage({ houseId }: ContactPageProps) {
               >
                 {locale === 'fr' ? 'OUVRIR DANS MAPS →' : 'OPEN IN MAPS →'}
               </a>
-            </div>
+              </div>
+            </Reveal>
           </div>
         </section>
 
         {/* Contact channels */}
         <section style={{ padding: 'clamp(2rem, 5vw, 4rem) 1.5rem', borderBottom: '1px solid var(--border)' }}>
-          <div className="max-w-5xl mx-auto">
+          <Reveal className="max-w-5xl mx-auto">
             <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 16 }}>
               {locale === 'fr' ? 'NOUS CONTACTER' : 'CONTACT US'}
             </p>
@@ -350,12 +351,12 @@ export default function ContactPage({ houseId }: ContactPageProps) {
                 INSTAGRAM — [VERIFY @handle]
               </span>
             </div>
-          </div>
+          </Reveal>
         </section>
 
         {/* Sister house */}
         <section style={{ padding: '2rem 1.5rem', borderBottom: '1px solid var(--border)' }}>
-          <div className="max-w-5xl mx-auto">
+          <Reveal className="max-w-5xl mx-auto">
             <p className="text-annotation" style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--muted-foreground)', marginBottom: 8 }}>
               {locale === 'fr' ? 'NOTRE MAISON SŒUR' : 'OUR SISTER HOUSE'}
             </p>
@@ -366,7 +367,7 @@ export default function ContactPage({ houseId }: ContactPageProps) {
             >
               {locale === 'fr' ? `CONTACT ${sisterHouseName.toUpperCase()} →` : `${sisterHouseName.toUpperCase()} CONTACT →`}
             </Link>
-          </div>
+          </Reveal>
         </section>
 
         <InquiryForm houseId={houseId} />
